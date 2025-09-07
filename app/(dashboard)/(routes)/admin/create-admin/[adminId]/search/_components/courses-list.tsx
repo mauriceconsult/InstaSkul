@@ -1,12 +1,12 @@
+"use client";
+
 import { CourseCard } from "@/components/course-card";
-import { Admin, Course, Tuition, UserProgress } from "@prisma/client";
+import { Admin, Course } from "@prisma/client";
 
 type CoursesWithProgressWithAdmin = Course & {
   admin: Admin | null;
   tutors: { id: string }[];
   progress: number | null;
-  tuition?: Tuition | null;
-  userProgress?: UserProgress[];
 };
 
 interface CoursesListProps {
@@ -22,16 +22,19 @@ export const CoursesList = ({ items }: CoursesListProps) => {
             key={item.id}
             id={item.id}
             title={item.title}
-            imageUrl={item.imageUrl ?? ""}
-            tutorialsLength={item.tutors.length} // Renamed from tutorialsLength
+            imageUrl={item.imageUrl!}
+            tutorialsLength={item.tutors.length}
             description={item.description ?? ""}
-            admin={item.admin?.id ?? ""}
-            amount={item.amount ?? ""}
             progress={item.progress}
+            admin={item?.admin?.title ?? ""}
           />
         ))}
       </div>
-      {items.length === 0 && <div>No Courses found.</div>}
+      {items.length === 0 && (
+        <div className="text-center text-sm text-muted-foreground mt-10">
+          No Courses found.
+        </div>
+      )}
     </div>
   );
 };

@@ -202,6 +202,7 @@ const AdminIdPage = async ({
                   adminId={resolvedParams.adminId}
                 />
               </div>
+              
               <div>
                 <div className="flex items-center gap-x-2">
                   <IconBadge icon={ListChecks} />
