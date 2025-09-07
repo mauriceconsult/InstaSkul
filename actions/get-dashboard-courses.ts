@@ -1,26 +1,30 @@
 // actions/get-dashboard-courses.ts
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+import { Course, UserProgress } from "@prisma/client";
 
-export async function getDashboardCourses() {
+type CourseWithProgress = Course & { userProgress: UserProgress[] };
+
+export async function getDashboardCourses(): Promise<{
+  coursesInProgress: CourseWithProgress[];
+  completedCourses: CourseWithProgress[];
+}> {
   console.log("DATABASE_URL:", process.env.DATABASE_URL);
   try {
     const courses = await prisma.course.findMany({
       where: {
         isPublished: true,
-        // userProgress: { /* ... */ } // Adjust based on your schema
       },
       include: {
-        userProgress: true, // Include related data if needed
+        userProgress: true,
       },
     });
-    console.log("Raw courses:", courses);
+    console.log("Courses fetched:", courses);
 
-    // Example: Split courses into in-progress and completed
     const coursesInProgress = courses.filter((course) =>
-      course.userProgress?.some((progress) => !progress.isCompleted)
+      course.userProgress.some((progress) => !progress.isCompleted)
     );
     const completedCourses = courses.filter((course) =>
-      course.userProgress?.every((progress) => progress.isCompleted)
+      course.userProgress.every((progress) => progress.isCompleted)
     );
 
     console.log("Courses in progress:", coursesInProgress);
@@ -29,6 +33,6 @@ export async function getDashboardCourses() {
     return { coursesInProgress, completedCourses };
   } catch (error) {
     console.error("Database query failed:", error);
-    return { coursesInProgress: [], completedCourses: [] }; // Fallback
+    return { coursesInProgress: [], completedCourses: [] };
   }
 }
