@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
-  "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
+ "start": "next start -H 0.0.0.0 -p $PORT",
     "lint": "next lint",
     "prisma:seed": "prisma db seed",
     "test": "jest"
   },
+  "engines": {
+  "node": "22.x"
+},  
   "type": "module",
     "dependencies": {
     "@aws-sdk/client-s3": "^3.846.0",

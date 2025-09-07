@@ -5,6 +5,7 @@ import { Clock, CheckCircle } from "lucide-react";
 
 export default async function Dashboard() {
   try {
+    console.log("Fetching dashboard data...");
     const { coursesInProgress, completedCourses } = await getDashboardCourses();
     console.log("Dashboard data:", { coursesInProgress, completedCourses });
     return (
