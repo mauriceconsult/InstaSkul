@@ -10,7 +10,6 @@ export async function processPayment(courseId: string) {
     if (!course) {
       throw new Error(`Course not found: ${courseId}`);
     }
-    // Add payment logic here (e.g., update payment status, create enrollment)
     console.log("Payment processed for course:", course);
     return { success: true, course };
   } catch (error) {
