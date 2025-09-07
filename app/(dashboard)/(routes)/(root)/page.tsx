@@ -1,37 +1,27 @@
+// app/(dashboard)/(routes)/(root)/page.tsx
 import { getDashboardCourses } from "@/actions/get-dashboard-courses";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { CoursesList } from "../admin/create-admin/[adminId]/search/_components/courses-list";
-import { CheckCircle, Clock } from "lucide-react";
-import InfoCard from "./_components/info-card";
+import InfoCard from "./_components/info-card"; // Adjust path as needed
+import {
+  Clock,
+  // CheckCircle
+} from "lucide-react";
 
 export default async function Dashboard() {
-    const { userId } = await auth();
-    if (!userId) {
-        return redirect("/");
-    }
-    const { 
-        completedCourses,
-        coursesInProgress
-    } = await getDashboardCourses(userId);
-    return (
-      <div className="p-6 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <InfoCard
-            icon={Clock}
-            label="In progress"
-            numberOfItems={coursesInProgress.length}
-          />
-          <InfoCard
-            icon={CheckCircle}
-            label="Completed"
-            numberOfItems={completedCourses.length}
-            variant="success"
-          />
-        </div>
-        <CoursesList items={[...coursesInProgress, ...completedCourses]} />
-      </div>
-    );
+  const courses = await getDashboardCourses(); // Returns an array
+
+  return (
+    <div>
+      <InfoCard
+        icon={Clock}
+        label="In progress"
+        numberOfItems={courses && courses.coursesInProgress ? courses.coursesInProgress.length : 0} // Fallback to 0
+      />
+      {/* If you want to show completed courses separately, you need to filter them here */}
+      {/* <InfoCard
+        icon={CheckCircle}
+        label="Completed"
+        numberOfItems={completedCourses ? completedCourses.length : 0}
+      /> */}
+    </div>
+  );
 }
- 
- 

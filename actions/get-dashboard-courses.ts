@@ -1,105 +1,34 @@
-"use server";
+// actions/get-dashboard-courses.ts
+import prisma from "@/lib/prisma";
 
-import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
-import { Course, Admin, Tuition, UserProgress } from "@prisma/client";
-
-export type CourseWithProgressWithAdmin = Course & {
-  admin: Admin | null;
-  tutors: { id: string }[];
-  progress: number | null;
-  tuition: Tuition | null;
-  userProgress: UserProgress[];
-};
-
-export async function getDashboardCourses(userId: string): Promise<{
-  coursesInProgress: CourseWithProgressWithAdmin[];
-  completedCourses: CourseWithProgressWithAdmin[];
-}> {
+export async function getDashboardCourses() {
+  console.log("DATABASE_URL:", process.env.DATABASE_URL);
   try {
-    const { userId: clerkUserId } = await auth();
-    if (!clerkUserId || clerkUserId !== userId) {
-      console.log(
-        `[${new Date().toISOString()} getDashboardCourses] Unauthorized userId: ${userId}`
-      );
-      return { coursesInProgress: [], completedCourses: [] };
-    }
-
-    const courses = await db.course.findMany({
+    const courses = await prisma.course.findMany({
       where: {
         isPublished: true,
-        userProgress: {
-          some: { userId, isEnrolled: true },
-        },
+        // userProgress: { /* ... */ } // Adjust based on your schema
       },
       include: {
-        admin: true,
-        tutors: {
-          select: { id: true, title: true, isFree: true, position: true, playbackId: true },
-        },
-        tuitions: {
-          where: { userId },
-          select: {
-            id: true,
-            userId: true,
-            courseId: true,
-            amount: true,
-            status: true,
-            partyId: true,
-            username: true,
-            transactionId: true,
-            isActive: true,
-            isPaid: true,
-            transId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        userProgress: {
-          where: { userId },
-          select: {
-            id: true,
-            userId: true,
-            createdAt: true,
-            updatedAt: true,
-            courseId: true,
-            tutorId: true,
-            courseworkId: true,
-            assignmentId: true,
-            isEnrolled: true,
-            isCompleted: true,
-          },
-        },
+        userProgress: true, // Include related data if needed
       },
-      orderBy: { position: "asc" },
     });
+    console.log("Raw courses:", courses);
 
-    const coursesWithProgress: CourseWithProgressWithAdmin[] = courses.map((course) => {
-      const totalTutors = course.tutors.length;
-      const completedTutors = course.userProgress.filter((up) => up.isCompleted).length;
-      const progress = totalTutors > 0 ? (completedTutors / totalTutors) * 100 : 0;
-      return {
-        ...course,
-        progress,
-        tuition: course.tuitions[0] || null,
-        userProgress: course.userProgress,
-      };
-    });
-
-    const coursesInProgress = coursesWithProgress.filter(
-      (course) => course.progress !== null && course.progress < 100
+    // Example: Split courses into in-progress and completed
+    const coursesInProgress = courses.filter((course) =>
+      course.userProgress?.some((progress) => !progress.isCompleted)
     );
-    const completedCourses = coursesWithProgress.filter(
-      (course) => course.progress === 100
+    const completedCourses = courses.filter((course) =>
+      course.userProgress?.every((progress) => progress.isCompleted)
     );
 
-    console.log(
-      `[${new Date().toISOString()} getDashboardCourses] Fetched ${coursesInProgress.length} in-progress and ${completedCourses.length} completed courses for userId: ${userId}`
-    );
+    console.log("Courses in progress:", coursesInProgress);
+    console.log("Completed courses:", completedCourses);
 
     return { coursesInProgress, completedCourses };
   } catch (error) {
-    console.error(`[${new Date().toISOString()} getDashboardCourses] Error:`, error);
-    return { coursesInProgress: [], completedCourses: [] };
+    console.error("Database query failed:", error);
+    return { coursesInProgress: [], completedCourses: [] }; // Fallback
   }
 }
