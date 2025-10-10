@@ -11,9 +11,9 @@
     "prisma:seed": "prisma db seed",
     "test": "jest"
   },
-  "engines": {
-    "node": "18.x"
-  },
+ "engines": {
+  "node": "22.x"
+},
   "type": "module",
   "dependencies": {   
   "@tiptap/pm": "^2.7.4",   

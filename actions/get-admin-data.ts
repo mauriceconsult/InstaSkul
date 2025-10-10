@@ -2,7 +2,6 @@
 
 import { db } from "@/lib/db";
 import { CourseWithProgressWithAdmin } from "@/actions/get-courses";
-import { Admin, Course, Tuition, UserProgress, Tutor } from "@prisma/client";
 
 export async function getAdminData(
   adminId: string,
@@ -101,13 +100,72 @@ export async function getAdminData(
       return null;
     }
 
+    interface Tutor {
+      id: string;
+      title: string;
+      isFree: boolean;
+      position: number;
+      playbackId: string | null;
+    }
+
+    interface Tuition {
+      id: string;
+      userId: string;
+      courseId: string;
+      amount: number;
+      status: string;
+      partyId: string | null;
+      username: string | null;
+      transactionId: string | null;
+      isActive: boolean;
+      isPaid: boolean;
+      transId: string | null;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+
+    interface UserProgress {
+      id: string;
+      userId: string;
+      createdAt: Date;
+      updatedAt: Date;
+      courseId: string;
+      tutorId: string | null;
+      courseworkId: string | null;
+      assignmentId: string | null;
+      isEnrolled: boolean;
+      isCompleted: boolean;
+    }
+
+    interface AdminCourse {
+      id: string;
+      title: string;
+      isPublished: boolean;
+      position: number;
+      admin: {
+        id: string;
+        title: string;
+        userId: string;
+        description: string | null;
+        imageUrl: string | null;
+        position: number;
+        isPublished: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        schoolId: string | null;
+      };
+      tutors: Tutor[];
+      tuitions: Tuition[];
+      userProgress: UserProgress[];
+    }
+
     const courses: CourseWithProgressWithAdmin[] = admin.courses.map(
-      (course) => {
-        const totalTutors = course.tutors.length;
-        const completedTutors = course.userProgress.filter(
-          (up) => up.isCompleted
+      (course: AdminCourse) => {
+        const totalTutors: number = course.tutors.length;
+        const completedTutors: number = course.userProgress.filter(
+          (up: UserProgress) => up.isCompleted
         ).length;
-        const progress =
+        const progress: number =
           totalTutors > 0 ? (completedTutors / totalTutors) * 100 : 0;
         return {
           ...course,
