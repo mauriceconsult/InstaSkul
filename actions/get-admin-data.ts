@@ -2,8 +2,12 @@
 
 import { db } from "@/lib/db";
 import { CourseWithProgressWithAdmin } from "@/actions/get-courses";
+import { Admin, Course, Tuition, UserProgress, Tutor } from "@prisma/client";
 
-export async function getAdminData(adminId: string, userId: string): Promise<{
+export async function getAdminData(
+  adminId: string,
+  userId: string
+): Promise<{
   admin: { id: string; title: string; description: string | null } | null;
   courses: CourseWithProgressWithAdmin[];
 } | null> {
@@ -43,7 +47,13 @@ export async function getAdminData(adminId: string, userId: string): Promise<{
               },
             },
             tutors: {
-              select: { id: true, title: true, isFree: true, position: true, playbackId: true },
+              select: {
+                id: true,
+                title: true,
+                isFree: true,
+                position: true,
+                playbackId: true,
+              },
             },
             tuitions: {
               where: { userId },
@@ -91,25 +101,41 @@ export async function getAdminData(adminId: string, userId: string): Promise<{
       return null;
     }
 
-    const courses: CourseWithProgressWithAdmin[] = admin.courses.map((course) => {
-      const totalTutors = course.tutors.length;
-      const completedTutors = course.userProgress.filter((up) => up.isCompleted).length;
-      const progress = totalTutors > 0 ? (completedTutors / totalTutors) * 100 : 0;
-      return {
-        ...course,
-        progress,
-        tuition: course.tuitions[0] || null,
-        userProgress: course.userProgress,
-      };
-    });
+    const courses: CourseWithProgressWithAdmin[] = admin.courses.map(
+      (course) => {
+        const totalTutors = course.tutors.length;
+        const completedTutors = course.userProgress.filter(
+          (up) => up.isCompleted
+        ).length;
+        const progress =
+          totalTutors > 0 ? (completedTutors / totalTutors) * 100 : 0;
+        return {
+          ...course,
+          progress,
+          tuition: course.tuitions[0] || null,
+          userProgress: course.userProgress,
+        } as CourseWithProgressWithAdmin;
+      }
+    );
 
     console.log(`[${new Date().toISOString()} getAdminData] Admin response:`, {
       adminId,
       title: admin.title,
-      courses: courses.map((c) => ({ id: c.id, title: c.title, progress: c.progress })),
+      courses: courses.map((c) => ({
+        id: c.id,
+        title: c.title,
+        progress: c.progress,
+      })),
     });
 
-    return { admin: { id: admin.id, title: admin.title, description: admin.description }, courses };
+    return {
+      admin: {
+        id: admin.id,
+        title: admin.title,
+        description: admin.description,
+      },
+      courses,
+    };
   } catch (error) {
     console.error(`[${new Date().toISOString()} getAdminData] Error:`, error);
     return null;
