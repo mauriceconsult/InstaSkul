@@ -1,4 +1,3 @@
-// app/(course)/courses/[courseId]/pay/page.tsx
 import { processPayment } from "./actions";
 import { NextPage } from "next";
 
