@@ -100,8 +100,75 @@ export async function getAdminData(
       return null;
     }
 
+    interface Tutor {
+      id: string;
+      title: string;
+      isFree: boolean | null;
+      position: number;
+      playbackId: string | null;
+    }
+
+    interface Tuition {
+      id: string;
+      userId: string;
+      courseId: string | null;
+      amount: string | null;
+      status: string | null;
+      partyId: string | null;
+      username: string | null;
+      transactionId: string | null;
+      isActive: boolean;
+      isPaid: boolean;
+      transId: string | null;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+
+    interface UserProgress {
+      id: string;
+      userId: string;
+      createdAt: Date;
+      updatedAt: Date;
+      courseId: string | null;
+      tutorId: string | null;
+      courseworkId: string | null;
+      assignmentId: string | null;
+      isEnrolled: boolean;
+      isCompleted: boolean;
+    }
+
+    interface AdminCourse {
+      id: string;
+      title: string;
+      userId: string | null;
+      description: string | null;
+      imageUrl: string | null;
+      amount: string | null;
+      adminId: string | null;
+      position: number | null;
+      isPublished: boolean;
+      publishDate: Date | null;
+      createdAt: Date;
+      updatedAt: Date;
+      admin: {
+        id: string;
+        title: string;
+        userId: string;
+        description: string | null;
+        imageUrl: string | null;
+        position: number | null;
+        isPublished: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        schoolId: string | null;
+      } | null;
+      tutors: Tutor[];
+      tuitions: Tuition[];
+      userProgress: UserProgress[];
+    }
+
     const courses: CourseWithProgressWithAdmin[] = admin.courses.map(
-      (course) => {
+      (course: AdminCourse) => {
         const totalTutors = course.tutors.length;
         const completedTutors = course.userProgress.filter(
           (up) => up.isCompleted
@@ -113,7 +180,7 @@ export async function getAdminData(
           progress,
           tuition: course.tuitions[0] || null,
           userProgress: course.userProgress,
-        } as CourseWithProgressWithAdmin;
+        };
       }
     );
 

@@ -15,7 +15,7 @@ interface AdminImageFormProps {
   initialData: Admin;
   adminId: string;
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 const formSchema = z.object({
   imageUrl: z.string().min(1),
 });
@@ -70,7 +70,7 @@ export const AdminImageForm = ({
               alt="Upload"
               fill
               className="object-cover rounded-md"
-              src={initialData.imageUrl}
+              src={initialData.imageUrl || "instaskul_fallback.svg"}
             />
           </div>
         ))}

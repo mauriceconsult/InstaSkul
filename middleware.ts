@@ -1,20 +1,33 @@
-// middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-  try {
-    console.log("Middleware processing:", request.url);
-    return NextResponse.next();
-  } catch (error) {
-    console.error("Middleware error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+const isProtectedRoute = createRouteMatcher([
+  "/admin(.*)",
+  "/api/courses/(.*)",
+  "/search",
+  "/courses/(.*)",
+  "/payroll/(.*)",
+]);
+
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+  console.log("Middleware processing:", req.url);
+  const sessionCookie = req.cookies.get("__session")?.value;
+  console.log("__session cookie:", sessionCookie || "Not found");
+  const authData = await auth(); // Use await for logging
+  console.log("Auth object:", JSON.stringify(authData, null, 2));
+  if (isProtectedRoute(req)) {
+    const { userId } = authData;
+    console.log("User ID:", userId);
+    if (!userId) {
+      console.log("Redirecting to sign-in, no userId found");
+      const signInUrl = new URL("/sign-in", req.url);
+      signInUrl.searchParams.set("redirect_url", req.url);
+      return NextResponse.redirect(signInUrl);
+    }
   }
-}
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: ["/((?!_next|api/auth).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
 };
