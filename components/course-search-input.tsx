@@ -1,11 +1,11 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { useDebounce } from "@/hooks/use-debounce";
-import { usePathname, useRouter } from "next/navigation";
 import qs from "query-string";
+import { useDebounce } from "@/hooks/use-debounce.js";
+import { usePathname, useRouter } from "next/navigation.js";
+import { Input } from "./ui/input.jsx";
 
 interface CourseSearchInputProps {
   adminId?: string;
