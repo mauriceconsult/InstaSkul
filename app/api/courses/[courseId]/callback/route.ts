@@ -1,57 +1,64 @@
+"use server";
+
 import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ courseId: string }> }
-) {
-  const { courseId } = await params;
-  const { userId, paymentStatus, transactionId } = await req.json();
-
-  if (paymentStatus !== "success") {
-    return NextResponse.json(
-      { success: false, message: "Payment failed" },
-      { status: 400 }
-    );
-  }
-
+export async function POST(req: NextRequest, context: any) {
   try {
-    const course = await db.course.findUnique({
-      where: { id: courseId, isPublished: true },
-    });
+    const { courseId } = context.params as { courseId: string };
+    const body = await req.json();
+    const { userId, transactionId, status, amount } = body;
 
-    if (!course) {
-      return NextResponse.json(
-        { success: false, message: "Course not found" },
-        { status: 404 }
-      );
+    if (!userId || !courseId || !transactionId || !status) {
+      return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    const enrollment = await db.enrollment.upsert({
-      where: { userId_courseId: { userId, courseId } },
+    // Create or update Tuition record
+    const tuition = await db.tuition.upsert({
+      where: {
+        userId_courseId: { userId, courseId },
+      },
+      update: {
+        status,
+        isPaid: status === "SUCCESSFUL",
+        transactionId,
+        amount: amount ? String(amount) : "0.00",
+        updatedAt: new Date(),
+      },
+      create: {
+        id: crypto.randomUUID(),
+        userId,
+        courseId,
+        transactionId,
+        status,
+        isPaid: status === "SUCCESSFUL",
+        isActive: true,
+        enrolleeUserId: userId,
+        amount: amount ? String(amount) : "0.00",
+        partyId: null,
+        username: null,
+        transId: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    // Create or update Enrollment record
+    await db.enrollment.upsert({
+      where: {
+        userId_courseId: { userId, courseId },
+      },
       update: {},
       create: {
         userId,
         courseId,
+        tuitionId: tuition.id,
       },
     });
 
-    await db.tuition.create({
-      data: {
-        userId,
-        courseId,
-        amount: course.amount || "0",
-        transactionId,
-        status: "completed",
-      },
-    });
-
-    return NextResponse.json({ success: true, data: enrollment });
+    return new NextResponse("Payment processed successfully", { status: 200 });
   } catch (error) {
-    console.error(`[${new Date().toISOString()} API] Callback error:`, error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("[PAYMENT_CALLBACK_ERROR]", error);
+    return new NextResponse("Internal server error", { status: 500 });
   }
 }

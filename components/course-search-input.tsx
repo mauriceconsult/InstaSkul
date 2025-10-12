@@ -12,10 +12,7 @@ interface CourseSearchInputProps {
   courseId?: string;
 }
 
-export const CourseSearchInput = ({
-  adminId,
-  courseId,
-}: CourseSearchInputProps) => {
+export const CourseSearchInput = ({ adminId, courseId }: CourseSearchInputProps) => {
   const [value, setValue] = useState("");
   const debouncedValue = useDebounce(value);
   const router = useRouter();

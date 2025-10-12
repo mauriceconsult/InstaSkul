@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { Admin, School, Course } from "@prisma/client";
-import { getProgress } from "./get-progress";
+import { getProgress } from "./get-progress.tsx";
 
 export type AdminsWithSchool = Admin & {
   school: School | null;

@@ -1,5 +1,5 @@
 import { InstaSkulLogo } from "@/components/instaskul-logo";
-import { SidebarRoutes } from "./sidebar-routes";
+import { SidebarRoutes } from "./sidebar-routes.tsx";
 
 export const Sidebar = () => {
   return (

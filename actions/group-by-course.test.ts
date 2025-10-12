@@ -1,4 +1,4 @@
-import { groupByCourse, TuitionWithCourse } from "./group-by-course";
+import { groupByCourse, TuitionWithCourse } from "./group-by-course.tsx";
 import { Course, Tuition } from "@prisma/client";
 
 

@@ -1,22 +1,17 @@
 "use server";
 
-import {
-  Admin,
-  Course,
-  Tuition,
-  UserProgress,
-  Tutor,
-} from "@prisma/client";
-import { getProgress } from "./get-progress";
+import { Admin, Course, Tuition, UserProgress, Tutor } from "@prisma/client";
+import { getProgress } from "./get-progress.tsx";
 import { db } from "@/lib/db";
 
-export type CourseWithProgressWithAdmin = Course & {
+export interface CourseWithProgressWithAdmin extends Course {
   admin: Admin | null;
   tutors: Pick<Tutor, "id" | "title" | "isFree" | "position" | "playbackId">[];
   progress: number | null;
   tuition: Tuition | null;
   userProgress: UserProgress[];
-};
+  tuitions: Tuition[];
+}
 
 export type GetCourses = {
   userId: string;
@@ -58,6 +53,7 @@ export const getCourses = async ({
           select: {
             id: true,
             userId: true,
+            enrolleeUserId: true,
             courseId: true,
             amount: true,
             status: true,
@@ -95,12 +91,18 @@ export const getCourses = async ({
     const coursesWithProgress: CourseWithProgressWithAdmin[] =
       await Promise.all(
         courses.map(async (course) => {
-          const progress = await getProgress(userId, course.id);
+          const progress: number = await getProgress(userId, course.id);
           return {
             ...course,
+            admin: course.admin,
+            tutors: course.tutors,
             progress,
-            tuition: course.tuitions[0] || null,
+            tuition:
+              course.tuitions.find(
+                (t) => t.userId === userId || t.enrolleeUserId === userId
+              ) || null,
             userProgress: course.userProgress,
+            tuitions: course.tuitions,
           };
         })
       );

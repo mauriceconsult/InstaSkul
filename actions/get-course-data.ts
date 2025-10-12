@@ -1,167 +1,93 @@
-// actions/get-course-data.ts
 "use server";
 
 import { db } from "@/lib/db";
-import { Course, Tutor, Tuition, Admin } from "@prisma/client";
-
-// Suppress ESLint warnings for unused imports
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { UserProgress } from "@prisma/client";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Attachment } from "@prisma/client";
-
-export type CourseWithProgressWithAdmin = Course & {
-  tutors: (Tutor & {
-    course: Course | null;
-    attachmentIds: { id: string }[];
-  })[];
-  userProgress: {
-    id: string;
-    userId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    isCompleted: boolean;
-    courseId: string;
-    tutorId: string | null;
-    courseworkId: string | null;
-    assignmentId: string | null;
-    isEnrolled: boolean;
-  }[];
-  tuition?: Tuition;
-  admin?: Admin;
-  progress?: number;
-};
+import { currentUser } from "@clerk/nextjs/server";
+import { CourseWithProgressWithAdmin } from "./get-courses.tsx";
+import { getProgress } from "./get-progress.tsx";
 
 export async function getCourseData(
-  courseId: string,
-  userId: string
+  courseId: string
 ): Promise<CourseWithProgressWithAdmin | null> {
-  if (!userId) {
-    console.log(
-      `[${new Date().toISOString()} getCourseData] No userId, returning null`
-    );
-    return null;
+  const user = await currentUser();
+  if (!user) {
+    console.error("[GET_COURSE_DATA_ERROR] User not authenticated");
+    throw new Error("User not authenticated");
   }
 
-  if (!courseId || typeof courseId !== "string") {
-    console.log(
-      `[${new Date().toISOString()} getCourseData] Invalid courseId, returning null`
-    );
-    return null;
-  }
-
-  try {
-    const course = await db.course.findUnique({
-      where: { id: courseId, isPublished: true },
-      include: {
-        tutors: {
-          include: {
-            course: true,
-            attachments: {
-              select: { id: true },
-            },
-          },
-          orderBy: { position: "asc" },
-        },
-        admin: {
-          select: {
-            id: true,
-            title: true,
-            userId: true,
-            description: true,
-            imageUrl: true,
-            position: true,
-            isPublished: true,
-            createdAt: true,
-            updatedAt: true,
-            schoolId: true,
-          },
-        },
-        tuitions: {
-          where: { userId },
-          select: {
-            id: true,
-            userId: true,
-            courseId: true,
-            amount: true,
-            status: true,
-            partyId: true,
-            username: true,
-            transactionId: true,
-            isActive: true,
-            isPaid: true,
-            transId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        userProgress: {
-          where: { userId },
-          select: {
-            id: true,
-            userId: true,
-            createdAt: true,
-            updatedAt: true,
-            isCompleted: true,
-            courseId: true,
-            tutorId: true,
-            courseworkId: true,
-            assignmentId: true,
-            isEnrolled: true,
-          },
+  const course = await db.course.findUnique({
+    where: { id: courseId },
+    include: {
+      admin: true,
+      tutors: {
+        where: { isPublished: true },
+        select: {
+          id: true,
+          title: true,
+          isPublished: true,
+          isFree: true,
+          position: true,
+          playbackId: true,
         },
       },
-    });
+      tuitions: {
+        where: { userId: user.id },
+        select: {
+          id: true,
+          userId: true,
+          enrolleeUserId: true,
+          courseId: true,
+          amount: true,
+          status: true,
+          partyId: true,
+          username: true,
+          transactionId: true,
+          isActive: true,
+          isPaid: true,
+          transId: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+      userProgress: {
+        where: { userId: user.id },
+        select: {
+          id: true,
+          userId: true,
+          courseId: true,
+          tutorId: true,
+          courseworkId: true,
+          assignmentId: true,
+          isEnrolled: true,
+          isCompleted: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
 
-    if (!course) {
-      console.log(
-        `[${new Date().toISOString()} getCourseData] Course not found for courseId: ${courseId}`
-      );
-      return null;
-    }
-
-    const totalTutors = course.tutors.length;
-    const completedTutors = course.userProgress.filter(
-      (up) => up.isCompleted
-    ).length;
-    const progress =
-      totalTutors > 0 ? (completedTutors / totalTutors) * 100 : 0;
-
-    const courseWithProgress: CourseWithProgressWithAdmin = {
-      ...course,
-      tutors: course.tutors.map((tutor) => ({
-        ...tutor,
-        attachmentIds: tutor.attachments.map((a) => ({ id: a.id })),
-      })),
-      userProgress: course.userProgress.map((up) => ({
-        ...up,
-        courseId: up.courseId ?? "",
-      })),
-      progress,
-      tuition: course.tuitions[0] || undefined,
-      admin: course.admin || undefined,
-    };
-
-    console.log(
-      `[${new Date().toISOString()} getCourseData] Course response:`,
-      {
-        courseId,
-        title: course.title,
-        isEnrolled: course.userProgress[0]?.isEnrolled || false,
-        isPaid: course.tuitions[0]?.isPaid || false,
-        progress,
-        tutors: course.tutors.map((t) => ({
-          id: t.id,
-          title: t.title,
-          isFree: t.isFree,
-          attachmentIds: t.attachments.map((a) => a.id),
-        })),
-      }
-    );
-
-    return courseWithProgress;
-  } catch (error) {
-    console.error(`[${new Date().toISOString()} getCourseData] Error:`, error);
+  if (!course) {
+    console.error("[GET_COURSE_DATA_ERROR] Course not found");
     return null;
   }
+
+  const progress: number = await getProgress(user.id, courseId);
+  const courseWithProgress: CourseWithProgressWithAdmin = {
+    ...course,
+    admin: course.admin,
+    tutors: course.tutors,
+    progress,
+    tuition:
+      course.tuitions.find(
+        (t) => t.userId === user.id || t.enrolleeUserId === user.id
+      ) || null,
+    userProgress: course.userProgress,
+    tuitions: course.tuitions,
+  };
+
+  console.log(`[getCourseData] Course response:`, {
+    courseId,
+    course: courseWithProgress,
+  });
+  return courseWithProgress;
 }

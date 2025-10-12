@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IconBadge } from "./icon-badge";
+import { IconBadge } from "./icon-badge.tsx";
 import { BookOpen } from "lucide-react";
 
 interface AssignmentCardProps {
