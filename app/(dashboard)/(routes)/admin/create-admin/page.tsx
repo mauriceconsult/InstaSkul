@@ -50,10 +50,8 @@ const CreateAdmin = () => {
         <p className="text-sm text-slate-600">
           <span>
             {" "}
-            Create an academic admin here (a Faculty). Don&apos;t worry, you can change the name
-            later. The Faculty is your strategic (admin) level where you demonstrate a
-            vision that inspires Course(s) developed in your admin. You could
-            keep evaluating your vision as you grow and add Courses to the admin.
+            Give your admin a title. Don&apos;t worry, you can change the title
+            later.
           </span>
         </p>
         <Form {...form}>
@@ -70,12 +68,12 @@ const CreateAdmin = () => {
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      placeholder="e.g., 'Fashion & Design'"
+                      placeholder="e.g., 'John's Fashion & Design'"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    What is the scope of this Faculty?
+                    What is the scope of this Admin?
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

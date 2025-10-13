@@ -9,15 +9,17 @@ const isProtectedRoute = createRouteMatcher([
   "/payroll/(.*)",
 ]);
 
-export default clerkMiddleware(async (auth, req: NextRequest) => {
+export default clerkMiddleware((auth, req: NextRequest) => {
   console.log("Middleware processing:", req.url);
+
   const sessionCookie = req.cookies.get("__session")?.value;
   console.log("__session cookie:", sessionCookie || "Not found");
-  const authData = await auth(); // Use await for logging
-  console.log("Auth object:", JSON.stringify(authData, null, 2));
+
+  const { userId, sessionId } = auth(); // ✅ Only access needed values
+  console.log("User ID:", userId);
+  console.log("Session ID:", sessionId);
+
   if (isProtectedRoute(req)) {
-    const { userId } = authData;
-    console.log("User ID:", userId);
     if (!userId) {
       console.log("Redirecting to sign-in, no userId found");
       const signInUrl = new URL("/sign-in", req.url);
@@ -25,6 +27,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
       return NextResponse.redirect(signInUrl);
     }
   }
+
   return NextResponse.next();
 });
 

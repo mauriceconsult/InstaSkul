@@ -1,19 +1,13 @@
-// lib/prisma.ts
-import { PrismaClient, Prisma } from "@prisma/client";
-
-if (!process.env.DATABASE_URL) {
-  console.error("DATABASE_URL is not set");
-  throw new Error("DATABASE_URL is not set");
-}
+import { PrismaClient } from "@prisma/client";
 
 console.log("Initializing Prisma with DATABASE_URL:", process.env.DATABASE_URL);
-const prisma = new PrismaClient();
+
+// Singleton pattern to avoid multiple instances in development
+const prisma = globalThis.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prisma = prisma;
+}
+
 console.log("Prisma initialized successfully");
-
 export { prisma };
-
-export type NoticeboardWithComments = Prisma.NoticeboardGetPayload<{
-  include: { comments: true };
-}>;
-
-export type Comment = Prisma.CommentGetPayload<true>;
