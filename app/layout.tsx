@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ToastProvider } from "@/components/providers/toaster-provider";
-import Footer from "@/components/footer";
+import { ToastProvider } from "@/components/providers/toaster-provider.jsx";
+import Footer from "@/components/footer.jsx";
+
 
 export const metadata: Metadata = {
   title: "InstaSkul",

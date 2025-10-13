@@ -1,7 +1,5 @@
-import Link from "next/link";
+import { InstaSkulLogo } from "@/components/instaskul-logo.jsx";
 import { Metadata } from "next";
-import { InstaSkulLogo } from "@/components/instaskul-logo";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "InstaSkul User Guide and Terms of Use",
@@ -28,7 +26,7 @@ export default function DocsPage() {
           InstaSkul User Guide
         </h1>
         <p className="text-slate-600 mb-8 text-center">
-          Learning Management Platform. Version 1.0 | August 2025.
+          Learning Management Platform. Version 1.0 | October 2025.
         </p>
 
         <h2 className="text-2xl font-semibold text-slate-800 mb-4">
@@ -46,13 +44,13 @@ export default function DocsPage() {
           About InstaSkul
         </h3>
 
-        <Image
+        {/* <Image
           src="/adminImage.png"
           alt="Admin Image"
           width={500}
           height={300}
           className="rounded-md mb-8"
-        />
+        /> */}
 
         <p className="text-slate-600 mb-8">
           InstaSkul enables educators to build and share educational courses,
@@ -67,9 +65,9 @@ export default function DocsPage() {
           This guide helps educators and learners navigate InstaSkul’s features.
           The Terms of Use section ensures proper use and protects intellectual
           property. For updates, visit our{" "}
-          <Link href="/docs" className="text-blue-600 hover:underline">
+          {/* <Link href="/docs" className="text-blue-600 hover:underline">
             docs page
-          </Link>
+          </Link> */}
           .
         </p>
 
@@ -94,18 +92,7 @@ export default function DocsPage() {
         </p>
         <ul className="list-disc list-inside text-slate-600 mb-4 space-y-2">
           <li>
-            Log In: Sign in at{" "}
-            <Link
-              href="https://instaskul.com"
-              className="text-blue-600 hover:underline"
-            >
-              instaskul.com
-            </Link>{" "}
-            using your credentials.
-          </li>
-          <li>
-            Access Dashboard: Navigate to the Creator Dashboard from the
-            sidebar.
+            Access Dashboard: Navigate to the Admin Dashboard from the sidebar.
           </li>
           <li>
             Click on create admin and give a title to your admin. This will be
@@ -279,16 +266,6 @@ export default function DocsPage() {
         </h3>
         <ul className="list-disc list-inside text-slate-600 mb-4 space-y-2">
           <li>
-            Browse Courses: Visit{" "}
-            <Link
-              href="https://instaskul.com"
-              className="text-blue-600 hover:underline"
-            >
-              instaskul.com/admin/courses
-            </Link>{" "}
-            and use the search bar to find courses.
-          </li>
-          <li>
             Enroll: Click a course, then select "Enroll" and complete payment
             via MoMo API (enter a 12-digit MSISDN, e.g., 256123456789).
           </li>
@@ -350,8 +327,8 @@ export default function DocsPage() {
             written permission from InstaSkul.
           </li>
           <li>
-            Creators retain ownership of their course content but grant
-            InstaSkul a non-exclusive license to host and display it.
+            Admins retain ownership of their course content but grant InstaSkul
+            a non-exclusive license to host and display it.
           </li>
         </ul>
 
@@ -360,22 +337,12 @@ export default function DocsPage() {
         </h3>
         <ul className="list-disc list-inside text-slate-600 mb-4 space-y-2">
           <li>
-            Creators: Must upload original content and comply with copyright
-            laws. InstaSkul is not liable for user-generated content violations.
+            Admins: Must upload original content and comply with copyright laws.
+            InstaSkul is not liable for user-generated content violations.
           </li>
           <li>
             Learners: Must use content for personal learning only. Sharing login
             credentials or course materials is prohibited.
-          </li>
-          <li>
-            Report copyright concerns to{" "}
-            <Link
-              href="mailto:support@instaskul.com"
-              className="text-blue-600 hover:underline"
-            >
-              support@instaskul.com
-            </Link>
-            .
           </li>
         </ul>
 
@@ -384,56 +351,8 @@ export default function DocsPage() {
         </h3>
         <p className="text-slate-600 mb-8">
           InstaSkul is not responsible for payment issues due to invalid MSISDN
-          or course data errors. Contact support for assistance.
-        </p>
-
-        <h2 className="text-2xl font-semibold text-slate-800 mb-4">
-          Contact and Support
-        </h2>
-        <p className="text-slate-600 mb-8">
-          Join our community on{" "}
-          <Link
-            href="https://x.com/instaskul"
-            className="text-blue-600 hover:underline"
-          >
-            X
-          </Link>
-          ,{" "}
-          <Link
-            href="https://linkedin.com/company/instaskul"
-            className="text-blue-600 hover:underline"
-          >
-            LinkedIn
-          </Link>
-          ,{" "}
-          <Link
-            href="https://discord.gg/instaskul"
-            className="text-blue-600 hover:underline"
-          >
-            Discord
-          </Link>
-          ,{" "}
-          <Link
-            href="https://whatsapp.com/channel/instaskul"
-            className="text-blue-600 hover:underline"
-          >
-            WhatsApp
-          </Link>
-          , or{" "}
-          <Link
-            href="https://facebook.com/instaskul"
-            className="text-blue-600 hover:underline"
-          >
-            Facebook
-          </Link>
-          . Contact us at{" "}
-          <Link
-            href="mailto:support@instaskul.com"
-            className="text-blue-600 hover:underline"
-          >
-            support@instaskul.com
-          </Link>
-          .
+          or course data errors. Contact support for assistance:
+          support@instaskul.com
         </p>
       </div>
     </div>

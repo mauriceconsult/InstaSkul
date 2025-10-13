@@ -1,6 +1,6 @@
 import { createRouteHandler } from "uploadthing/next";
 
-import { ourFileRouter } from "./core.tsx";
+import { ourFileRouter } from "./core.js";
 
 // Export routes for Next App Router
 export const { GET, POST } = createRouteHandler({

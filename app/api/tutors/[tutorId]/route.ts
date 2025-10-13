@@ -1,7 +1,7 @@
-// app/api/tutors/[tutorId]/route.ts
-import { db } from "@/lib/db";
+import { db } from "@/lib/db.js";
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
+
 
 export async function GET(
   req: Request,

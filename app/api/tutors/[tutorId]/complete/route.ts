@@ -1,8 +1,8 @@
 "use server";
 
+import { db } from "@/lib/db.js";
 import { auth } from "@clerk/nextjs/server";
-import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 
 export async function POST(
   request: Request,

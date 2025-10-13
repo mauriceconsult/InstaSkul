@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db } from "@/lib/db.js";
 import { auth } from "@clerk/nextjs/server";
 
 export async function PATCH(

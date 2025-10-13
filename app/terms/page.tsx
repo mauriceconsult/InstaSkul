@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,23 +17,13 @@ export default function TermsPage() {
           © 2025 InstaSkul. All rights reserved.
         </p>
         <p className="text-gray-600 mb-4">
-          InstaSkul’s codebase is licensed under the MIT License (see{" "}
-          <Link href="/LICENSE" className="text-blue-600 hover:underline">
-            LICENSE
-          </Link>
-          ). Users retain copyright over their content but grant InstaSkul a
+          InstaSkul’s codebase is licensed under the MIT License.
+          Users retain copyright over their content but grant InstaSkul a
           worldwide, non-exclusive, royalty-free license to host and distribute
           it.
         </p>
-        <p className="text-gray-600 mb-4">
-          To report copyright infringement, contact{" "}
-          <Link
-            href="mailto:dmca@instaskul.com"
-            className="text-blue-600 hover:underline"
-          >
-            dmca@instaskul.com
-          </Link>
-          .
+        <p className="text-gray-600 mb-4">         
+            support@instaskul.com
         </p>
       </div>
     </div>

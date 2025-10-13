@@ -1,8 +1,7 @@
-// app/api/upload/route.ts
-import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { nanoid } from "nanoid";
+import { NextRequest, NextResponse } from "next/server.js";
 
 export async function POST(request: NextRequest) {
   try {
