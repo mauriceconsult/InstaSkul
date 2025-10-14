@@ -2,8 +2,8 @@
   "name": "instaskul-lms",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "build": "tsc --noEmit && node --max-old-space-size=12288 node_modules/next/dist/bin/next build --no-lint",
+  "scripts": {   
+    "build": "prisma generate && tsc --noEmit && node --max-old-space-size=12288 node_modules/next/dist/bin/next build --no-lint",
     "start": "next start -H 0.0.0.0 -p 3000",
     "env": "node -r dotenv/config .env.local",
     "prisma:generate": "npm run env && npx prisma generate",
