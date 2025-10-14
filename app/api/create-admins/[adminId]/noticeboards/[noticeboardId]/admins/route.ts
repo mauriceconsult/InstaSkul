@@ -1,4 +1,4 @@
-import { db } from "@/lib/db.js";
+import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -8,7 +8,7 @@ export async function DELETE(
   { params }: { params: Promise<{ adminId: string; noticeboardId: string; }> }
 ) {
   try {
-    const { userId } = await auth();
+    const { userId } = auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -38,7 +38,7 @@ export async function PATCH(
   { params }: { params: Promise<{ adminId: string; noticeboardId: string }>}
 ) {
   try {
-    const { userId } = await auth();
+    const { userId } = auth();
     const { noticeboardId } = await params;
     const values = await req.json();
     if (!userId) {

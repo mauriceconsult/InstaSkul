@@ -2,7 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import Mux from "@mux/mux-node";
 import { NextResponse } from "next/server.js";
-import { db } from "@/lib/db.js";
+import { db } from "@/lib/db";
+
 
 const mux = new Mux({
   tokenId: process.env.MUX_TOKEN_ID || "",
