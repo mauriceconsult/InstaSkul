@@ -9,7 +9,9 @@
     "prisma:generate": "npm run env && npx prisma generate",
     "prisma:migrate": "npm run env && npx prisma migrate dev",
     "prisma:pull": "npm run env && npx prisma db pull",
-    "dev": "next dev"
+    "dev": "next dev",
+     "lint": "eslint . --ext .ts,.tsx",
+     "format": "prettier --write ."
   },
   "engines": {
     "node": "22.x"
@@ -78,7 +80,6 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "es-toolkit": "^1.39.5",
-    "eslint": "^9.35.0",
     "fs-extra": "^11.3.2",
     "fuzzysort": "^3.1.0",
     "glob": "^10.4.5",
@@ -142,12 +143,13 @@
     "@types/react-dom": "^18.3.7",
     "@types/sanitize-html": "^2.16.0",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "15.5.4",
-    "eslint-plugin-react": "^7.37.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
+    "eslint-config-next": "^15.5.4",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.4.0",
     "jest": "^30.0.5",
     "js-yaml": "^4.1.0",
     "postcss": "^8",
