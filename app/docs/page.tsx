@@ -1,4 +1,4 @@
-import { InstaSkulLogo } from "@/components/instaskul-logo.jsx";
+import { InstaSkulLogo } from "@/components/instaskul-logo";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
