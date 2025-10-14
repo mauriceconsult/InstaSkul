@@ -1,11 +1,12 @@
+// middleware.ts
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
   "/admin(.*)",
   "/api/courses/(.*)",
+  "/search",
   "/courses/(.*)",
   "/payroll(.*)",
 ]);
@@ -34,6 +35,10 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 });
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)",
+  ],
 };
+
+// ✅ Force Vercel to run this as a Node.js function
 export const runtime = "nodejs";
