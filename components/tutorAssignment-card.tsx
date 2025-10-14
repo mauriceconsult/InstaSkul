@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { IconBadge } from "./icon-badge.tsx";
+import { IconBadge } from "./icon-badge";
 import { BookOpen } from "lucide-react";
 
 interface TutorAssignmentCardProps {

@@ -2,8 +2,8 @@
 
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { CourseWithProgressWithAdmin } from "./get-courses.tsx";
-import { getProgress } from "./get-progress.tsx";
+import { CourseWithProgressWithAdmin } from "./get-courses";
+import { getProgress } from "./get-progress";
 
 export async function getCourseData(
   courseId: string

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Progress } from "./ui/progress.tsx";
+import { Progress } from "./ui/progress";
 
 interface CourseProgressProps {
   value: number;

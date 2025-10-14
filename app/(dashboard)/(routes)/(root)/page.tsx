@@ -1,6 +1,5 @@
-// app/(dashboard)/(routes)/(root)/page.tsx
 import { getDashboardCourses } from "@/actions/get-dashboard-courses";
-import InfoCard from "./_components/info-card.tsx";
+import InfoCard from "./_components/info-card";
 import { Clock, CheckCircle } from "lucide-react";
 
 export default async function Dashboard() {

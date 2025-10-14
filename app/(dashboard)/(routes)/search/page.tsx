@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
-import { Schools } from "./_components/schools.tsx";
-import { SearchInput } from "./_components/search-input.tsx";
+import { Schools } from "./_components/schools";
+import { SearchInput } from "./_components/search-input";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { AdminsList } from "./_components/admins-list.tsx";
+import { AdminsList } from "./_components/admins-list";
 import { getAdmins } from "@/actions/get-admins";
 
 interface SearchPageProps {

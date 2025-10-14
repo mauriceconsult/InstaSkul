@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { DialogTitle } from "./dialog.tsx";
+import { DialogTitle } from "./dialog";
 
 const Sheet = SheetPrimitive.Root;
 

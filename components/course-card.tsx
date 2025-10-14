@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Preview } from "./preview.tsx";
+import { Preview } from "./preview";
 
 interface CourseCardProps {
   id: string;

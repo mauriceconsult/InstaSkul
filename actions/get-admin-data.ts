@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { CourseWithProgressWithAdmin } from "./get-courses.tsx";
+import { CourseWithProgressWithAdmin } from "./get-courses";
 
 export async function getAdminData(adminId: string) {
   const user = await currentUser();

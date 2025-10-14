@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import NavbarRoutes from "./navbar-routes.tsx";
+import NavbarRoutes from "./navbar-routes";
 
 
 interface DashboardLayoutProps {

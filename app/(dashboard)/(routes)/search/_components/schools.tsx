@@ -11,7 +11,7 @@ import {
   FcSportsMode,
 } from "react-icons/fc";
 import { IconType } from "react-icons";
-import { SchoolItem } from "./school-item.tsx";
+import { SchoolItem } from "./school-item";
 
 interface SchoolsProps {
     items: School[];

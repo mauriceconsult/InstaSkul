@@ -1,7 +1,7 @@
 "use server";
 
 import { Admin, Course, Tuition, UserProgress, Tutor } from "@prisma/client";
-import { getProgress } from "./get-progress.tsx";
+import { getProgress } from "./get-progress";
 import { db } from "@/lib/db";
 
 export interface CourseWithProgressWithAdmin extends Course {

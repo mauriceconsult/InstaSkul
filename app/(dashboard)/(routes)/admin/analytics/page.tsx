@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getAnalytics } from "@/actions/get-analytics";
-import { AnalyticsChart } from "./_components/chart.tsx";
-import { DataCard } from "./_components/data-card.tsx";
+import { AnalyticsChart } from "./_components/chart";
+import { DataCard } from "./_components/data-card";
 
 export default async function AdminAnalyticsPage() {
   const { userId } = await auth();

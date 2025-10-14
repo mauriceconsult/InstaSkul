@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 config({ path: "./.env.local" });
 
-import { momo } from "./lib/momo.ts";
+import { momo } from "./lib/momo";
 
 const payload = {
   amount: "1000",
