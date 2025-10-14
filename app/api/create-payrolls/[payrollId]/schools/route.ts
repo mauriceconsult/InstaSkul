@@ -8,7 +8,7 @@ export async function DELETE(
   { params }: { params: Promise<{ payrollId: string }> }
 ) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -38,7 +38,7 @@ export async function PATCH(
   { params }: { params: Promise<{ payrollId: string }>}
 ) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     const { payrollId } = await params;
     const values = await req.json();
     if (!userId) {

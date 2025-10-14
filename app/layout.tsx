@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-// import Footer from "@/components/footer.jsx";
-// import { ToastProvider } from "@/components/providers/toaster-provider"
+import { ToastProvider } from "@/components/ui/toast";
+import Footer from "@/components/footer";
+
 
 
 export const metadata: Metadata = {
   title: "InstaSkul",
-  description: "IT Consulting & Training Agency",
+  description: "A modern and fully secure learning management system built with Next.js & Clerk. ",
   keywords: [
     "IT",
     "Consulting",
@@ -28,9 +29,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="min-h-full">
         <body className="flex flex-col min-h-full bg-gray-50">
-          {/* <ToastProvider /> */}
+          <ToastProvider />
           <main className="flex-grow">{children}</main>
-          {/* <Footer /> */}
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
