@@ -19,6 +19,12 @@ package-lock.json
 # production
 /build
 
+echo ".env.local" >> .gitignore
+echo ".env" >> .gitignore
+git add .gitignore
+git commit -m "Ignore env files"
+git push origin master
+
 # misc
 .DS_Store
 *.pem
@@ -42,3 +48,5 @@ next-env.d.ts
 .vercel
 
 .vercel
+.env
+.env.local
