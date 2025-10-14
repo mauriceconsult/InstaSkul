@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "env": "node -r dotenv/config",
+    "env": "node -r dotenv/config -e ''",
   "prisma:migrate": "npm run env && npx prisma migrate dev",
-  "prisma:seed": "node -r dotenv/config prisma/seed.ts", 
+  "prisma:seed": "node -r dotenv/config prisma/seed.ts",
+
+
     "build": "prisma generate && tsc --noEmit && node --max-old-space-size=12288 node_modules/next/dist/bin/next build --no-lint",
     "start": "next start -H 0.0.0.0 -p 3000",
     "prisma:generate": "npm run env && npx prisma generate", 
