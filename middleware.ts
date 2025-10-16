@@ -1,48 +1,48 @@
-// middleware.ts
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-// Define route matchers
+// ✅ Define protected routes
 const isProtectedRoute = createRouteMatcher([
   "/admin(.*)",
-  "/api/courses/(.*)",
-  "/search",
-  "/courses/(.*)",
-  "/payroll(.*)",
   "/dashboard(.*)",
+  "/courses(.*)",
+  "/api/courses(.*)",
+  "/payroll(.*)",
 ]);
 
+// ✅ Define explicitly public routes
 const isPublicRoute = createRouteMatcher([
-  "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/public(.*)",
+  "/",
 ]);
 
-// Main middleware
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   const { userId } = await auth();
 
-  // Redirect unauthenticated users away from protected routes
+  // 🔒 Redirect unauthenticated users trying to access protected routes
   if (isProtectedRoute(req) && !userId) {
     const signInUrl = new URL("/sign-in", req.url);
     signInUrl.searchParams.set("redirect_url", req.url);
     return NextResponse.redirect(signInUrl);
   }
 
-  // Redirect signed-in users away from public pages (optional)
+  // 🪩 Redirect authenticated users away from public routes
   if (isPublicRoute(req) && userId) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
+  // ✅ Allow normal request flow
   return NextResponse.next();
 });
 
-// Middleware configuration
+// ✅ Define routes middleware applies to
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)",
+  ],
 };
 
-// Force Node.js runtime (avoid Edge errors)
+// ✅ Force runtime to Node.js (required for Clerk)
 export const runtime = "nodejs";

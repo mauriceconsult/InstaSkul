@@ -9,6 +9,7 @@ const nextConfig = {
     };
     return config;
   },
+
   images: {
     remotePatterns: [
       {
@@ -28,6 +29,11 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+  },
+
+  // ✅ Run all middleware and API routes in Node.js runtime
+  experimental: {
+    runtime: "nodejs",
   },
 };
 
