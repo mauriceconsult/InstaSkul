@@ -2,6 +2,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
+// ✅ Define which routes require authentication
 const isProtectedRoute = createRouteMatcher([
   "/admin(.*)",
   "/api/courses/(.*)",
@@ -10,25 +11,25 @@ const isProtectedRoute = createRouteMatcher([
   "/payroll(.*)",
 ]);
 
+// ✅ Define public routes (optional)
 const isPublicRoute = createRouteMatcher([
+  "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/public(.*)",
-  "/",
 ]);
 
-// ✅ Clerk middleware (Node runtime only)
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   const { userId } = await auth();
 
-  // 🔒 Block protected routes if unauthenticated
+  // 🔒 Redirect unauthenticated users
   if (isProtectedRoute(req) && !userId) {
     const signInUrl = new URL("/sign-in", req.url);
     signInUrl.searchParams.set("redirect_url", req.url);
     return NextResponse.redirect(signInUrl);
   }
 
-  // 🪩 Redirect signed-in users away from public routes
+  // 🪩 Redirect signed-in users away from public routes (optional)
   if (isPublicRoute(req) && userId) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
@@ -36,10 +37,10 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   return NextResponse.next();
 });
 
-// ✅ Explicitly tell Vercel to use Node runtime (NOT Edge)
+// ✅ Tell Vercel to run this in Node.js runtime (not Edge)
+export const runtime = "nodejs";
+
+// ✅ Configure matcher (which routes trigger middleware)
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)",
-  ],
-  runtime: "nodejs",
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
 };
