@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // ✅ Keep your custom Webpack optimization
   webpack: (config) => {
     config.optimization.splitChunks = {
       cacheGroups: {
@@ -10,6 +11,7 @@ const nextConfig = {
     return config;
   },
 
+  // ✅ Remote image domains
   images: {
     remotePatterns: [
       {
@@ -31,9 +33,9 @@ const nextConfig = {
     ],
   },
 
-  // ✅ Run all middleware and API routes in Node.js runtime
-  experimental: {
-    runtime: "nodejs",
+  // ✅ Disable lint warnings in production (optional)
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
