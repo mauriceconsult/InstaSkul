@@ -34,6 +34,6 @@
     /* --- Next.js Plugin --- */
     "plugins": [{ "name": "next" }]
   },
-  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", "middleware.mjs"],
   "exclude": ["node_modules"]
 }
