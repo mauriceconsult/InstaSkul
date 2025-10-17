@@ -1,39 +1,42 @@
 {
   "compilerOptions": {
-    /* --- Core Targets --- */
-    "target": "ESNext", // Use modern JS output
-    "lib": ["dom", "dom.iterable", "esnext"],
-
-    /* --- Module System --- */
-    "module": "ESNext", // Keep ES modules for SWC/Turbopack
-    "moduleResolution": "Bundler", // ✅ Crucial for ESM libraries like @mux/mux-player-react
-    "allowImportingTsExtensions": false, // Avoids '.ts' extension import errors
-
-    /* --- Interop / TS Behavior --- */
+    "jsx": "preserve", // ✅ use the modern JSX runtime
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ESNext",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-
-    /* --- Strictness & Safety --- */
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-
-    /* --- JSX / React --- */
-    "jsx": "preserve", // Let Next handle JSX transform
-    "incremental": true,
-
-    /* --- Aliases & Paths --- */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
-
-    /* --- Next.js Plugin --- */
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "incremental": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", "middleware.mjs"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

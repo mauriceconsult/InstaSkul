@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 import { requireAuth } from "@/lib/auth";
 
 export default async function DashboardPage() {
