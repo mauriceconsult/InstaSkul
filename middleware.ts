@@ -1,37 +1,40 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/admin(.*)",
-  "/dashboard(.*)",
-  "/courses(.*)",
-  "/api/courses(.*)",
-  "/payroll(.*)",
-]);
-
+// Define public routes using createRouteMatcher
 const isPublicRoute = createRouteMatcher([
+  "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/public(.*)",
-  "/",
 ]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  const { userId } = await auth();
+  // Await the auth() promise to get userId and redirectToSignIn
+  const { userId, redirectToSignIn } = await auth();
 
-  if (isProtectedRoute(req) && !userId) {
-    const signInUrl = new URL("/sign-in", req.url);
-    signInUrl.searchParams.set("redirect_url", req.url);
-    return NextResponse.redirect(signInUrl);
+  const url = req.nextUrl.clone();
+
+  // If user is not authenticated and the route is not public, redirect to sign-in
+  if (!userId && !isPublicRoute(req)) {
+    url.pathname = "/sign-in";
+    url.searchParams.set("redirect_url", req.url);
+    return redirectToSignIn({ returnBackUrl: req.url });
   }
 
-  if (isPublicRoute(req) && userId) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  // If user is authenticated and trying to access sign-in or sign-up, redirect to dashboard
+  if (userId && (url.pathname.startsWith("/sign-in") || url.pathname.startsWith("/sign-up"))) {
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
   }
 
+  // Allow the request to proceed
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/auth).*)"],
 };
+
+export const runtime = "nodejs";
