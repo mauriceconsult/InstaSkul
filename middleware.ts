@@ -1,3 +1,8 @@
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
+  runtime: "nodejs", // ✅ Force Node runtime
+};
+
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -31,7 +36,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
   return NextResponse.next();
 });
-
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
+  runtime: "nodejs", // ✅ add this line
 };
