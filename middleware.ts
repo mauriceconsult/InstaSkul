@@ -1,11 +1,7 @@
-export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
-  runtime: "nodejs", // ✅ Force Node runtime
-};
-
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
+// ✅ Define which routes require auth
 const isProtectedRoute = createRouteMatcher([
   "/admin(.*)",
   "/dashboard(.*)",
@@ -14,6 +10,7 @@ const isProtectedRoute = createRouteMatcher([
   "/payroll(.*)",
 ]);
 
+// ✅ Define which routes are public
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
@@ -21,6 +18,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
 ]);
 
+// ✅ Main middleware logic
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   const { userId } = await auth();
 
@@ -36,7 +34,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
   return NextResponse.next();
 });
+
+// ✅ Tell Vercel/Next.js to run this under the Node.js runtime
+export const runtime = "nodejs";
+
+// ✅ Define where the middleware applies
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public/.*|api/auth).*)"],
-  runtime: "nodejs", // ✅ add this line
 };

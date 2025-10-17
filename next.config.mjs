@@ -9,31 +9,14 @@ const nextConfig = {
     };
     return config;
   },
-
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "utfs.io",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-      {
-        protocol: "https",
-        hostname: "via.placeholder.com",
-        port: "",
-        pathname: "/**",
-      },
+      { protocol: "https", hostname: "utfs.io", pathname: "/**" },
+      { protocol: "https", hostname: "**" },
+      { protocol: "https", hostname: "via.placeholder.com", pathname: "/**" },
     ],
   },
-
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  eslint: { ignoreDuringBuilds: true },
 };
 
 export default nextConfig;
