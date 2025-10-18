@@ -1,11 +1,9 @@
-// app/(dashboard)/(routes)/(root)/page.tsx
-
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 import { getDashboardCourses } from "@/actions/get-dashboard-courses";
-import InfoCard from "./_components/info-card";
 import { Clock, CheckCircle } from "lucide-react";
+import InfoCard from "@/app/(dashboard)/(routes)/(root)/_components/info-card";
 
 export default async function Dashboard() {
   try {
