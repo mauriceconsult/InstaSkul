@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export default authMiddleware({
-  publicRoutes: ["/sign-in(.*)", "/sign-up(.*)"], // No public routes except sign-in/up
+  publicRoutes: ["/sign-in(.*)", "/sign-up(.*)"],
   afterAuth(auth, req: NextRequest) {
     const url = req.nextUrl.clone();
     if (!auth.userId && !url.pathname.startsWith("/sign-in") && !url.pathname.startsWith("/sign-up")) {
