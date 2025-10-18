@@ -4,10 +4,12 @@
   "private": true,
 "scripts": {
   "dev": "next dev",
-  "build": "NODE_OPTIONS='--max-old-space-size=8192' prisma generate && next build",
+  "build": "prisma generate && next build",
+  "vercel-build": "prisma generate && next build",
   "start": "next start",
-  "postinstall": "prisma generate"
-},
+  "postinstall": "node -e \"try { require('child_process').execSync('npx prisma generate', { stdio: 'inherit' }); } catch (e) { console.error('Prisma generate failed:', e.message); }\""
+}
+,
   "engines": {
     "node": "22.x"
   },
