@@ -1,19 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+
   experimental: {
-    // These help with large Next 15 builds
+    // Lower concurrency to reduce build memory use
     workerThreads: false,
     cpus: 1,
-    turbo: false,
   },
-
-  // Disable static optimization to prevent memory spikes
-  generateStaticParams: async () => [],
 
   trailingSlash: false,
 
   webpack: (config) => {
+    // Reduce bundle splitting to keep memory low
     config.optimization.splitChunks = {
       cacheGroups: {
         default: false,
@@ -31,7 +29,9 @@ const nextConfig = {
     ],
   },
 
-  eslint: { ignoreDuringBuilds: true },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
