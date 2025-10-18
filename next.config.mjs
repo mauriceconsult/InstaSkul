@@ -1,17 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
 
   experimental: {
-    // Lower concurrency to reduce build memory use
-    workerThreads: false,
-    cpus: 1,
+    // Must be an object, not a boolean
+    serverActions: {
+      bodySizeLimit: "2mb",
+      allowedOrigins: ["*"],
+    },
   },
 
+  reactStrictMode: true,
   trailingSlash: false,
 
   webpack: (config) => {
-    // Reduce bundle splitting to keep memory low
     config.optimization.splitChunks = {
       cacheGroups: {
         default: false,

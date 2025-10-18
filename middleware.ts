@@ -1,12 +1,10 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { authMiddleware } from "@clerk/nextjs/server";
 
 export default authMiddleware({
-  publicRoutes: ["/sign-in(.*)", "/sign-up(.*)"],
+  // no public routes; all require Clerk auth
+  publicRoutes: ["/api/health", "/api/public/hello"],
 });
 
 export const config = {
-  matcher: [
-    // Match all routes except static assets and API
-    "/((?!_next|.*\\..*|favicon.ico|api).*)",
-  ],
+  matcher: ["/((?!_next|.*\\..*).*)"],
 };
