@@ -1,12 +1,1 @@
-{
-  "builds": [
-    {
-      "src": "middleware.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "next.config.js",
-      "use": "@vercel/next"
-    }
-  ]
-}
+{}
