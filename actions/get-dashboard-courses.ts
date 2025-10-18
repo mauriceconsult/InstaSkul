@@ -1,4 +1,3 @@
-// actions/get-dashboard-courses.ts
 import { prisma } from "@/lib/prisma";
 import { Course, UserProgress } from "@prisma/client";
 
