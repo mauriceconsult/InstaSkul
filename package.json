@@ -4,13 +4,10 @@
   "private": true,
 "scripts": {
   "dev": "next dev",
-  "build": "set NODE_OPTIONS=--max-old-space-size=8192 && next build",
-  "vercel-build": "prisma generate && next build",
+  "build": "NODE_OPTIONS='--max-old-space-size=8192' prisma generate && next build",
   "start": "next start",
-  "postinstall": "node -e \"if (process.env.VERCEL !== '1') { require('child_process').execSync('npx prisma generate', { stdio: 'inherit' }); }\""
-}
-
-,
+  "postinstall": "prisma generate"
+},
   "engines": {
     "node": "22.x"
   },
