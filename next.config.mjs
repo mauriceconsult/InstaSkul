@@ -1,5 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  experimental: {
+    // These help with large Next 15 builds
+    workerThreads: false,
+    cpus: 1,
+    turbo: false,
+  },
+
+  // Disable static optimization to prevent memory spikes
+  generateStaticParams: async () => [],
+
+  trailingSlash: false,
+
   webpack: (config) => {
     config.optimization.splitChunks = {
       cacheGroups: {
@@ -9,6 +22,7 @@ const nextConfig = {
     };
     return config;
   },
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "utfs.io", pathname: "/**" },
@@ -16,6 +30,7 @@ const nextConfig = {
       { protocol: "https", hostname: "via.placeholder.com", pathname: "/**" },
     ],
   },
+
   eslint: { ignoreDuringBuilds: true },
 };
 
