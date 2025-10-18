@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 
 import { getDashboardCourses } from "@/actions/get-dashboard-courses";
 import { Clock, CheckCircle } from "lucide-react";
-import InfoCard from "@/app/(dashboard)/(routes)/(root)/_components/info-card";
+import InfoCard from "./_components/info-card";
 
 export default async function Dashboard() {
   try {
