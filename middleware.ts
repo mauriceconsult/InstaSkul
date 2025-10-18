@@ -12,7 +12,7 @@ export default authMiddleware({
       return NextResponse.redirect(url);
     }
     if (auth.userId && (url.pathname.startsWith("/sign-in") || url.pathname.startsWith("/sign-up"))) {
-      url.pathname = "/dashboard/dashboard"; // Updated to match new route
+      url.pathname = "/dashboard/dashboard";
       return NextResponse.redirect(url);
     }
     return NextResponse.next();
