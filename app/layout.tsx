@@ -17,6 +17,10 @@ export const metadata: Metadata = {
     "online courses",
     "education",
     "Training",
+    "Course management",
+    "learning management system",
+    "LMS",
+    "e-learning",
   ],
 };
 
