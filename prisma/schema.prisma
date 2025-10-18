@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  // previewFeatures = ["fullTextSearchPostgres"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -28,6 +27,7 @@ model Payroll {
   adminPayrolls AdminPayroll[]
   attachments   Attachment[]
   school        School?        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
   @@unique([userId, schoolId])
   @@index([schoolId])
 }
@@ -44,6 +44,7 @@ model AdminPayroll {
   adminId     String?
   payroll     Payroll?     @relation(fields: [payrollId], references: [id], onDelete: Cascade)
   attachments Attachment[]
+
   @@unique([userId, payrollId, adminId])
   @@index([payrollId, adminId, userId])
 }
@@ -51,7 +52,6 @@ model AdminPayroll {
 model Tuition {
   id             String       @id @default(uuid())
   userId         String
-  enrolleeUserId String?
   partyId        String?
   username       String?
   courseId       String?
@@ -61,11 +61,13 @@ model Tuition {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   status         String?
-  transactionId  String?
   transId        String?
+  transactionId  String?
+  enrolleeUserId String?
   attachments    Attachment[]
-  course         Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
   enrollment     Enrollment?  @relation("TuitionToEnrollment")
+  course         Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
   @@unique([userId, courseId])
   @@index([courseId])
 }
@@ -94,6 +96,7 @@ model CourseNoticeboard {
   attachments Attachment[]
   comments    Comment[]
   course      Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
   @@index([courseId])
 }
 
@@ -111,6 +114,7 @@ model Coursework {
   attachments  Attachment[]
   course       Course?        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userProgress UserProgress[]
+
   @@index([courseId])
 }
 
@@ -129,6 +133,7 @@ model Admin {
   attachments  Attachment[]
   courses      Course[]
   noticeboards Noticeboard[]
+
   @@index([schoolId])
 }
 
@@ -154,6 +159,7 @@ model Course {
   tuitions           Tuition[]
   tutors             Tutor[]
   userProgress       UserProgress[]
+
   @@index([adminId])
 }
 
@@ -161,11 +167,12 @@ model Enrollment {
   id        String   @id @default(uuid())
   userId    String
   courseId  String
-  tuitionId String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  tuitionId String   @unique
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   tuition   Tuition  @relation("TuitionToEnrollment", fields: [tuitionId], references: [id], onDelete: Cascade)
+
   @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
@@ -186,30 +193,32 @@ model Tutor {
   courseId     String?
   muxDataId    String?        @unique
   playbackId   String?        @unique
-  isCompleted  Boolean        @default(false)
   adminId      String?
+  isCompleted  Boolean        @default(false)
   assignments  Assignment[]
   attachments  Attachment[]
   course       Course?        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   muxData      MuxData?       @relation(fields: [muxDataId], references: [id], onDelete: Cascade)
   userProgress UserProgress[]
+
   @@index([courseId])
 }
 
 model Assignment {
   id           String         @id @default(uuid())
-  title        String
   userId       String?
+  title        String
   description  String?
-  tutorId      String?
   position     Int?
   isPublished  Boolean        @default(false)
-  publishDate  DateTime?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+  tutorId      String?
+  publishDate  DateTime?
   tutor        Tutor?         @relation(fields: [tutorId], references: [id], onDelete: Cascade)
   attachments  Attachment[]
   userProgress UserProgress[]
+
   @@index([tutorId])
 }
 
@@ -231,11 +240,11 @@ model Attachment {
   updatedAt           DateTime           @updatedAt
   noticeboardId       String?
   courseworkId        String?
+  assignmentId        String?
   courseNoticeboardId String?
   tutorId             String?
   tuitionId           String?
   payrollId           String?
-  assignmentId        String?
   adminId             String?
   adminPayrollId      String?
   admin               Admin?             @relation(fields: [adminId], references: [id], onDelete: Cascade)
@@ -248,6 +257,7 @@ model Attachment {
   payrolls            Payroll?           @relation(fields: [payrollId], references: [id], onDelete: Cascade)
   tuition             Tuition?           @relation(fields: [tuitionId], references: [id], onDelete: Cascade)
   tutor               Tutor?             @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
   @@index([adminId, courseId, courseworkId, noticeboardId, courseNoticeboardId, payrollId, tuitionId, tutorId])
 }
 
@@ -255,17 +265,18 @@ model UserProgress {
   id           String      @id @default(uuid())
   userId       String
   tutorId      String?
+  assignmentId String?
   courseworkId String?
   isCompleted  Boolean     @default(false)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
-  assignmentId String?
-  isEnrolled   Boolean     @default(false)
   courseId     String?
+  isEnrolled   Boolean     @default(false)
   assignments  Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   courses      Course?     @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseworks  Coursework? @relation(fields: [courseworkId], references: [id], onDelete: Cascade)
   tutors       Tutor?      @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
   @@unique([userId, tutorId])
   @@unique([userId, courseworkId])
   @@unique([userId, courseId])
@@ -287,6 +298,7 @@ model Noticeboard {
   attachments Attachment[]
   comments    Comment[]
   admin       Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
   @@index([adminId])
 }
 
