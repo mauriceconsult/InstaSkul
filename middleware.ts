@@ -21,8 +21,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from /root
-  if (userId && url.pathname === "/root") {
+  // Redirect authenticated users away from /
+  if (userId && url.pathname === "/") {
     url.pathname = "/";
     return NextResponse.redirect(url);
   }
