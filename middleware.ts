@@ -1,30 +1,26 @@
-import { authMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export default authMiddleware({
-  publicRoutes: ["/sign-in(.*)", "/sign-up(.*)", "/api/health", "/api/public(.*)"],
+const isPublicRoute = createRouteMatcher([
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api/health",
+  "/api/public(.*)",
+]);
 
-  afterAuth(auth, req: NextRequest) {
-    // Redirect unauthenticated users trying to access protected pages
-    if (!auth.userId && !req.nextUrl.pathname.match(/^\/(sign-in|sign-up|api\/health|api\/public)/)) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/sign-in";
-      url.searchParams.set("redirect_url", req.url);
-      return NextResponse.redirect(url);
-    }
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth(); // ✅ call it and await it
 
-    // Optional: redirect authenticated users away from landing page
-    // if (auth.userId && req.nextUrl.pathname === "/") {
-    //   return NextResponse.redirect(new URL("/dashboard", req.url));
-    // }
+  if (!isPublicRoute(req) && !userId) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/sign-in";
+    url.searchParams.set("redirect_url", req.url);
+    return NextResponse.redirect(url);
+  }
 
-    return NextResponse.next();
-  },
+  return NextResponse.next();
 });
 
 export const config = {
   matcher: ["/((?!_next|.*\\..*).*)"],
 };
-
-export const runtime = "nodejs";

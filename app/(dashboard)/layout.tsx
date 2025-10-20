@@ -1,7 +1,14 @@
+import { headers } from "next/headers";
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
+  // ✅ Await headers here to satisfy Next.js dynamic API requirements
+  await headers();
+
   return (
     <div className="h-full">
       <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
@@ -14,4 +21,5 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     </div>
   );
 };
+
 export default DashboardLayout;
