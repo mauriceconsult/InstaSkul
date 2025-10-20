@@ -9,12 +9,23 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth(); // ✅ call it and await it
+  // If it's a public route, skip auth
+  if (isPublicRoute(req)) return NextResponse.next();
 
-  if (!isPublicRoute(req) && !userId) {
+  const { userId } = await auth();
+
+  // Redirect unauthenticated users
+  if (!userId) {
     const url = req.nextUrl.clone();
     url.pathname = "/sign-in";
     url.searchParams.set("redirect_url", req.url);
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users from root to /root (optional)
+  if (req.nextUrl.pathname === "/") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/root";
     return NextResponse.redirect(url);
   }
 
@@ -22,5 +33,5 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"],
+  matcher: ["/((?!_next|.*\\..*).*)"], // Run middleware for all routes except static assets
 };
