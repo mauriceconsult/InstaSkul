@@ -9,9 +9,7 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // ✅ must await auth() because it can be async
-  const { userId } = await auth(); 
-
+  const { userId } = await auth();
   const url = req.nextUrl.clone();
 
   // Redirect unauthenticated users to sign-in
@@ -21,8 +19,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from /
-  if (userId && url.pathname === "/") {
+  // Redirect authenticated users away from /root
+  if (userId && url.pathname === "/root") {
     url.pathname = "/";
     return NextResponse.redirect(url);
   }
