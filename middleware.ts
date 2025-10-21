@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
@@ -8,21 +8,24 @@ const isPublicRoute = createRouteMatcher([
   "/api/public(.*)",
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
+export default clerkMiddleware((auth, req) => {
+  const { userId } = auth();
+  const url = req.nextUrl.clone();
 
-  // If unauthenticated and not a public route → redirect
   if (!userId && !isPublicRoute(req)) {
-    const signInUrl = new URL("/sign-in", req.url);
-    signInUrl.searchParams.set("redirect_url", req.url);
-    return NextResponse.redirect(signInUrl);
+    url.pathname = "/sign-in";
+    url.searchParams.set("redirect_url", req.url);
+    return NextResponse.redirect(url);
   }
 
-  // Otherwise, continue normally
+  if (userId && url.pathname === "/root") {
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 });
 
-// ✅ Match all routes except static assets
 export const config = {
   matcher: ["/((?!_next|.*\\..*).*)"],
 };
