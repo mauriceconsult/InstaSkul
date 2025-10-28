@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -12,7 +12,7 @@ export async function DELETE(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const payroll = await db.payroll.findUnique({
+    const payroll = await prisma.payroll.findUnique({
       where: {
         id: (await params).payrollId,
         userId: userId,
@@ -21,7 +21,7 @@ export async function DELETE(
     if (!payroll) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const deletedPayroll = await db.payroll.delete({
+    const deletedPayroll = await prisma.payroll.delete({
       where: {
         id: (await params).payrollId,
       },
@@ -44,7 +44,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unathorized", { status: 401 });
     }
-    const payroll = await db.payroll.update({
+    const payroll = await prisma.payroll.update({
       where: {
         id: payrollId,
         userId,

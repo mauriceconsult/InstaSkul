@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -18,7 +18,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownAdmin = await db.admin.findUnique({
+    const ownAdmin = await prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId,
@@ -27,7 +27,7 @@ export async function PATCH(
     if (!ownAdmin) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId,
@@ -51,7 +51,7 @@ export async function PATCH(
       return new NextResponse("Missing credentials", { status: 400 });
     }
 
-    const publishedadmin = await db.admin.update({
+    const publishedadmin = await prisma.admin.update({
       where: {
         id: (await params).adminId,
         userId,

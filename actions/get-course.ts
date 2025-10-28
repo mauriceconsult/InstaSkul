@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Attachment, Course } from "@prisma/client";
 
 interface GetCourseProps {
@@ -12,7 +12,7 @@ export const getCourse = async ({
   courseId,
 }: GetCourseProps) => {
   try {
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         id: courseId,
         isPublished: true,
@@ -24,12 +24,12 @@ export const getCourse = async ({
     let attachments: Attachment[] = [];
     let nextCourse: Course | null = null;
     if (userId) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: {
           courseId: courseId,
         },
       });
-      nextCourse = await db.course.findFirst({
+      nextCourse = await prisma.course.findFirst({
         where: {
           adminId: adminId,
           isPublished: true,

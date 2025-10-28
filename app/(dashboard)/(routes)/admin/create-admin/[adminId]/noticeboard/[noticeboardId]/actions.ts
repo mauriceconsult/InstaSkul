@@ -1,18 +1,18 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Prisma, Noticeboard } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function onEditAction(adminId: string, id: string) {
   try {
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { id: adminId },
     });
     if (!admin) {
       return { success: false, message: "Admin not found" };
     }
-    const noticeboard = await db.noticeboard.findUnique({ where: { id } });
+    const noticeboard = await prisma.noticeboard.findUnique({ where: { id } });
     if (!noticeboard) {
       return { success: false, message: "Noticeboard not found" };
     }
@@ -28,13 +28,13 @@ export async function createNoticeboard(
   values: { title: string; description?: string }
 ): Promise<{ success: boolean; message: string; data?: Noticeboard }> {
   try {
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { id: adminId },
     });
     if (!admin) {
       return { success: false, message: "Admin not found" };
     }
-    const noticeboard = await db.noticeboard.create({
+    const noticeboard = await prisma.noticeboard.create({
       data: {
         title: values.title,
         description: values.description || "",
@@ -69,7 +69,7 @@ export async function updateNoticeboard(
   values: { description?: string }
 ): Promise<{ success: boolean; message: string; data?: Noticeboard }> {
   try {
-    const noticeboard = await db.noticeboard.findUnique({
+    const noticeboard = await prisma.noticeboard.findUnique({
       where: { id: noticeboardId },
     });
     if (!noticeboard) {
@@ -79,7 +79,7 @@ export async function updateNoticeboard(
       return { success: false, message: "Description exceeds 5000 characters" };
     }
 
-    const updatedNoticeboard = await db.noticeboard.update({
+    const updatedNoticeboard = await prisma.noticeboard.update({
       where: { id: noticeboardId },
       data: { description: values.description || "" },
     });

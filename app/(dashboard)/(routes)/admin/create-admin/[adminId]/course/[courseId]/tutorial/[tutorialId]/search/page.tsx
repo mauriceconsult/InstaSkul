@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { getAssignments } from "@/actions/get-assignments";
 import { AssignmentSearchInput } from "../assignment/[assignmentId]/search/_components/assignment-search-input";
 import { AssignmentsList } from "../assignment/[assignmentId]/search/_components/assignments-list";
@@ -22,7 +22,7 @@ const TutorSearchPage = async ({ searchParams }: TutorSearchPageProps) => {
   }
 
   const resolvedParams = await searchParams;
-  const tutorials = await db.tutor.findMany({
+  const tutorials = await prisma.tutor.findMany({
     where: {
       isPublished: true,
     },

@@ -1,5 +1,5 @@
 import React from "react";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
@@ -59,7 +59,7 @@ const TutorIdPage = async ({
     );
   }
 
-  const tutor = await db.tutor.findUnique({
+  const tutor = await prisma.tutor.findUnique({
     where: {
       id: resolvedParams.tutorialId,
       courseId: resolvedParams.courseId,
@@ -88,7 +88,7 @@ const TutorIdPage = async ({
     );
   }
 
-  const course = await db.course.findMany({
+  const course = await prisma.course.findMany({
     select: {
       id: true,
       title: true,

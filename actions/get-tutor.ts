@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Assignment, Attachment, Tutor } from "@prisma/client";
 
 interface GetTutorProps {
@@ -13,7 +13,7 @@ export const getTutor = async ({
 }: GetTutorProps) => {
   try {
 
-    const tuition = await db.tuition.findUnique({
+    const tuition = await prisma.tuition.findUnique({
       where: {
         userId_courseId: {
           userId,
@@ -21,7 +21,7 @@ export const getTutor = async ({
         },
       },
     });
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         isPublished: true,
         id: courseId,
@@ -30,7 +30,7 @@ export const getTutor = async ({
         amount: true,
       },
     });
-    const tutorial = await db.tutor.findUnique({
+    const tutorial = await prisma.tutor.findUnique({
       where: {
         id: tutorId,
         isPublished: true,
@@ -48,24 +48,24 @@ export const getTutor = async ({
     let assignments: Assignment[] = [];
     let nextTutorial: Tutor | null = null;
     if (tuition) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: {
           courseId: courseId,
         },
       });
-      assignments = await db.assignment.findMany({
+      assignments = await prisma.assignment.findMany({
         where: {
           tutorId: tutorId,
         },
       });
     }
     if (tutorial.isFree || tuition) {
-      muxData = await db.muxData.findUnique({
+      muxData = await prisma.muxData.findUnique({
         where: {
           tutorId: tutorId,
         },
       });
-      nextTutorial = await db.tutor.findFirst({
+      nextTutorial = await prisma.tutor.findFirst({
         where: {
           courseId: courseId,
           isPublished: true,
@@ -78,7 +78,7 @@ export const getTutor = async ({
         },
       });
     }
-    const userProgress = await db.userProgress.findUnique({
+    const userProgress = await prisma.userProgress.findUnique({
       where: {
         userId_tutorId: {
           userId,

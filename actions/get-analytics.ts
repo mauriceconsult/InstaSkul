@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Course, Tuition } from "@prisma/client";
 
 type TuitionWithCourse = Tuition & {
@@ -27,7 +27,7 @@ export const groupByCourse = (
 };
 export const getAnalytics = async (userId: string) => {
   try {
-    const tuitions = await db.tuition.findMany({
+    const tuitions = await prisma.tuition.findMany({
       where: {
         course: {
           userId,

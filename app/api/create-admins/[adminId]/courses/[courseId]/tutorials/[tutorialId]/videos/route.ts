@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import Mux from "@mux/mux-node";
 import { NextResponse } from "next/server.js";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 
 
 const mux = new Mux({
@@ -34,7 +34,7 @@ export async function PATCH(
       return new NextResponse("No data provided", { status: 400 });
     }
 
-    const tutorial = await db.tutor.findUnique({
+    const tutorial = await prisma.tutor.findUnique({
       where: {
         id: tutorialId,
         userId,
@@ -45,18 +45,18 @@ export async function PATCH(
       return new NextResponse("Tutor not found", { status: 404 });
     }
 
-    const updatedTutorial = await db.tutor.update({
+    const updatedTutorial = await prisma.tutor.update({
       where: { id: tutorialId },
       data: { videoUrl },
       include: { muxData: true },
     });
 
     if (videoUrl) {
-      const existingMuxData = await db.muxData.findFirst({
+      const existingMuxData = await prisma.muxData.findFirst({
         where: { tutorId: tutorial.id },
       });
       if (existingMuxData) {
-        await db.muxData.delete({
+        await prisma.muxData.delete({
           where: { id: existingMuxData.id },
         });
       }
@@ -65,7 +65,7 @@ export async function PATCH(
         playback_policy: ["public"],
         test: false,
       });
-      await db.muxData.create({
+      await prisma.muxData.create({
         data: {
           tutorId: tutorial.id,
           assetId: asset.id,

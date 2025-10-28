@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function DELETE(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         id: (await params).courseId,
         userId: userId,
@@ -28,7 +28,7 @@ export async function DELETE(
     if (!course) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const coursework = await db.coursework.findUnique({
+    const coursework = await prisma.coursework.findUnique({
       where: {
         id: (await params).courseworkId,
         courseId: (await params).courseId,
@@ -38,7 +38,7 @@ export async function DELETE(
     if (!coursework) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const deletedCourseNotice = await db.coursework.delete({
+    const deletedCourseNotice = await prisma.coursework.delete({
       where: {
         id: (await params).courseworkId,
       },
@@ -77,7 +77,7 @@ export async function PATCH(
       return new NextResponse("Invalid coursework ID", { status: 400 });
     }
 
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         id: courseId,
         userId,
@@ -87,7 +87,7 @@ export async function PATCH(
       return new NextResponse("Course not found", { status: 404 });
     }
 
-    const coursework = await db.coursework.findUnique({
+    const coursework = await prisma.coursework.findUnique({
       where: {
         id: courseworkId,
       },
@@ -96,7 +96,7 @@ export async function PATCH(
       return new NextResponse("Coursework not found", { status: 404 });
     }
 
-    const updatedCoursework = await db.coursework.update({
+    const updatedCoursework = await prisma.coursework.update({
       where: {
         id: courseworkId,
       },

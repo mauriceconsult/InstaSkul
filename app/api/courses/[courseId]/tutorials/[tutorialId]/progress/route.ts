@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
 export async function PUT(
@@ -18,7 +18,7 @@ export async function PUT(
     const resolvedParams = await params;
     const { courseId, tutorialId } = resolvedParams;
 
-    const userProgress = await db.userProgress.upsert({
+    const userProgress = await prisma.userProgress.upsert({
       where: {
         userId_tutorId: {
           userId,

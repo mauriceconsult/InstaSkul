@@ -2,7 +2,7 @@
 
 import { Admin, Course, Tuition, UserProgress, Tutor } from "@prisma/client";
 import { getProgress } from "./get-progress";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 
 export interface CourseWithProgressWithAdmin extends Course {
   admin: Admin | null;
@@ -25,7 +25,7 @@ export const getCourses = async ({
   adminId,
 }: GetCourses): Promise<CourseWithProgressWithAdmin[]> => {
   try {
-    const courses = await db.course.findMany({
+    const courses = await prisma.course.findMany({
       where: {
         isPublished: true,
         title: {

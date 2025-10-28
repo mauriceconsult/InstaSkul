@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { CourseCard } from "@/components/course-card";
 import { Preview } from "@/components/preview";
 import Link from "next/link";
@@ -22,7 +22,7 @@ const AdminIdPage = async ({ params }: AdminIdPageProps) => {
 
   const { adminId } = await params;
 
-  const admin = await db.admin.findUnique({
+  const admin = await prisma.admin.findUnique({
     where: {
       id: adminId,
       isPublished: true,

@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, context: any) {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, context: any) {
     }
 
     // Create or update Tuition record
-    const tuition = await db.tuition.upsert({
+    const tuition = await prisma.tuition.upsert({
       where: {
         userId_courseId: { userId, courseId },
       },
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest, context: any) {
     });
 
     // Create or update Enrollment record
-    await db.enrollment.upsert({
+    await prisma.enrollment.upsert({
       where: {
         userId_courseId: { userId, courseId },
       },

@@ -1,11 +1,11 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Courses } from "../../../search/_components/courses";
 import { getCourseNoticeboards } from "@/actions/get-courseNoticeboards";
 import { CourseCourseNoticeboardSearchInput } from "./_components/course-coursenoticeboard-search-input";
 import { CourseCourseNoticeboardsList } from "./_components/course-coursenoticeboard-list";
-// import { CourseCourseNoticeboardsList } from "./_components/course-coursenoticeboard-list";
+
 
 
 interface CourseNoticeboardSearchPageProps {
@@ -23,7 +23,7 @@ const CourseNoticeboardSearchPage = async ({
   if (!userId) {
     return redirect("/"); 
   }
-  const courses = await db.course.findMany({
+  const courses = await prisma.course.findMany({
     orderBy: {
       title: "asc",
     },

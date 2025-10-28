@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { AdminIdSearchInput } from "./_components/adminId-search-input";
@@ -20,7 +20,7 @@ const AdminSearchPage = async ({
   if (!userId) {
     return redirect("/"); 
   }
-  const admins = await db.admin.findMany({
+  const admins = await prisma.admin.findMany({
     orderBy: {
       title: "asc",
     },

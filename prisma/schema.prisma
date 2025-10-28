@@ -93,8 +93,9 @@ model CourseNoticeboard {
   isPublished Boolean      @default(false)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  courseNoticeboardComments CourseNoticeboardComment[]
   attachments Attachment[]
-  comments    Comment[]
+  
   course      Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
@@ -113,6 +114,7 @@ model Coursework {
   publishDate  DateTime?
   attachments  Attachment[]
   course       Course?        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseworkSubmissions CourseworkSubmission[]
   userProgress UserProgress[]
 
   @@index([courseId])
@@ -216,6 +218,7 @@ model Assignment {
   tutorId      String?
   publishDate  DateTime?
   tutor        Tutor?         @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+  assignmentSubmissions AssignmentSubmission[]
   attachments  Attachment[]
   userProgress UserProgress[]
 
@@ -296,20 +299,76 @@ model Noticeboard {
   publishDate DateTime?
   adminId     String?
   attachments Attachment[]
-  comments    Comment[]
+  noticeboardComments NoticeboardComment[]
   admin       Admin?       @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([adminId])
 }
 
-model Comment {
-  id                  String            @id @default(uuid())
-  noticeboardId       String
-  courseNoticeboardId String
-  userId              String
-  content             String
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  courseNoticeboard   CourseNoticeboard @relation(fields: [courseNoticeboardId], references: [id], onDelete: Cascade)
-  noticeboard         Noticeboard       @relation(fields: [noticeboardId], references: [id], onDelete: Cascade)
+model NoticeboardComment {
+  id             String    @id @default(cuid())
+  noticeboardId  String
+  userId         String
+  content        String
+  createdAt      DateTime  @default(now())
+  parentId       String?   // for replies
+
+  noticeboard    Noticeboard @relation(fields: [noticeboardId], references: [id])  
+  parent         NoticeboardComment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies        NoticeboardComment[] @relation("CommentReplies")
+
+  @@index([noticeboardId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model CourseNoticeboardComment {
+  id                    String    @id @default(cuid())
+  courseNoticeboardId   String
+  userId                String
+  content               String
+  createdAt             DateTime  @default(now())
+  parentId              String?
+  courseNoticeboard     CourseNoticeboard @relation(fields: [courseNoticeboardId], references: [id])
+  parent                CourseNoticeboardComment? @relation("CourseCommentReplies", fields: [parentId], references: [id])
+  replies               CourseNoticeboardComment[] @relation("CourseCommentReplies")
+
+  @@index([courseNoticeboardId])
+  @@index([userId])
+  @@index([parentId])
+}
+model AssignmentSubmission {
+  id           String    @id @default(cuid())
+  assignmentId String
+  userId       String
+  fileUrl      String?
+  text         String?
+  submittedAt  DateTime  @default(now())
+  isGraded     Boolean   @default(false)
+  grade        Float?
+  feedback     String?
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@index([assignmentId])
+  @@index([userId])
+  @@unique([assignmentId, userId])
+}
+
+model CourseworkSubmission {
+  id           String    @id @default(cuid())
+  courseworkId String
+  userId       String
+  fileUrl      String?
+  text         String?
+  submittedAt  DateTime  @default(now())
+  isGraded     Boolean   @default(false)
+  grade        Float?
+  feedback     String?
+
+  coursework   Coursework @relation(fields: [courseworkId], references: [id], onDelete: Cascade)
+  
+
+  @@index([courseworkId])
+  @@index([userId])
+  @@unique([courseworkId, userId])
 }

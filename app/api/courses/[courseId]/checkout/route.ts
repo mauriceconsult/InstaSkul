@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -14,14 +14,14 @@ export async function POST(
 
     const { courseId } = await params; // Await params to resolve courseId
 
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         id: courseId,
         isPublished: true,
       },
     });
 
-    const tuition = await db.tuition.findUnique({
+    const tuition = await prisma.tuition.findUnique({
       where: {
         userId_courseId: {
           userId: user.id,

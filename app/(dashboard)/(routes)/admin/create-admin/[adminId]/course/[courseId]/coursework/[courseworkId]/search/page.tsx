@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getCourseworks } from "@/actions/get-courseworks";
@@ -21,7 +21,7 @@ const CourseworkSearchPage = async ({
   if (!userId) {
     return redirect("/"); 
   }
-  const courses = await db.course.findMany({
+  const courses = await prisma.course.findMany({
     orderBy: {
       title: "asc",
     },

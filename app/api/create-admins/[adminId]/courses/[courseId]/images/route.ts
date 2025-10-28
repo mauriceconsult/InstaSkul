@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
 export async function PATCH(
@@ -14,7 +14,7 @@ export async function PATCH(
   if (!imageUrl || imageUrl.length === 0) {
     return new Response("No data provided", { status: 400 });
   }
-  const course = await db.course.findUnique({
+  const course = await prisma.course.findUnique({
     where: {
       id: (await params).courseId,      
       userId,
@@ -23,7 +23,7 @@ export async function PATCH(
   if (!course) {
     return new Response("Course not found", { status: 404 });
   }
-  await db.course.update({
+  await prisma.course.update({
     where: {
       id: course.id,
     },

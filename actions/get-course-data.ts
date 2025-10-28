@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { CourseWithProgressWithAdmin } from "./get-courses";
 import { getProgress } from "./get-progress";
@@ -14,7 +14,7 @@ export async function getCourseData(
     throw new Error("User not authenticated");
   }
 
-  const course = await db.course.findUnique({
+  const course = await prisma.course.findUnique({
     where: { id: courseId },
     include: {
       admin: true,

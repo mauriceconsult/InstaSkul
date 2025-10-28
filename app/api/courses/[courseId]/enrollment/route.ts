@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -13,7 +13,7 @@ export async function GET(
 
   const { courseId } = await params; // Await params to resolve courseId
 
-  const enrollment = await db.userProgress.findFirst({
+  const enrollment = await prisma.userProgress.findFirst({
     where: { userId, courseId, isEnrolled: true },
     select: { isEnrolled: true },
   });

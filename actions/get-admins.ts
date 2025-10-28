@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Admin, School, Course } from "@prisma/client";
 import { getProgress } from "./get-progress";
 
@@ -21,7 +21,7 @@ export const getAdmins = async ({
   schoolId,
 }: GetAdmins): Promise<AdminsWithSchool[]> => {
   try {
-    const admins = await db.admin.findMany({
+    const admins = await prisma.admin.findMany({
       where: {
         isPublished: true,
         title: {

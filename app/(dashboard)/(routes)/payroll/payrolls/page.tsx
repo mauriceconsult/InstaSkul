@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { DataTable } from "./_components/payroll-data-table";
 import { columns } from "./_components/payroll-columns";
 
@@ -9,7 +9,7 @@ const PayrollsPage = async () => {
   if (!userId) {
     return redirect("/");
   }
-  const payrolls = await db.payroll.findMany({
+  const payrolls = await prisma.payroll.findMany({
     where: {
       userId,
     },

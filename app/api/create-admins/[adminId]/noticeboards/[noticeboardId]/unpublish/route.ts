@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -12,7 +12,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownFaculty = await db.admin.findUnique({
+    const ownFaculty = await prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId,
@@ -21,7 +21,7 @@ export async function PATCH(
     if (!ownFaculty) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownNotice = await db.noticeboard.findUnique({
+    const ownNotice = await prisma.noticeboard.findUnique({
       where: {
         id: (await params).noticeboardId,
         userId,
@@ -31,7 +31,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const unpublishedNoticeboard = await db.noticeboard.update({
+    const unpublishedNoticeboard = await prisma.noticeboard.update({
       where: {
         id: (await params).noticeboardId,
         adminId: (await params).adminId,
@@ -41,7 +41,7 @@ export async function PATCH(
         isPublished: false,
       },
     });
-    const publishedNoticeboards = await db.noticeboard.findMany({
+    const publishedNoticeboards = await prisma.noticeboard.findMany({
       where: {
         id: (await params).noticeboardId,
         adminId: (await params).adminId,
@@ -49,7 +49,7 @@ export async function PATCH(
       },
     });
     if (!publishedNoticeboards.length) {
-      await db.admin.update({
+      await prisma.admin.update({
         where: {
           id: (await params).adminId,
         },

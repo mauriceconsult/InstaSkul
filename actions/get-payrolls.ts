@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Payroll, School } from "@prisma/client";
 
 type PayrollWithSchool = Payroll & {
@@ -17,7 +17,7 @@ export const getPayrolls = async ({
   schoolId,
 }: GetPayrolls): Promise<PayrollWithSchool[]> => {
   try {
-    const payrolls = await db.payroll.findMany({
+    const payrolls = await prisma.payroll.findMany({
       where: {
         isPublished: true,
         title: title ? { contains: title } : undefined,

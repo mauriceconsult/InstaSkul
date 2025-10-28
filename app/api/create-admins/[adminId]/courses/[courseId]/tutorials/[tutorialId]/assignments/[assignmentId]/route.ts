@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -21,7 +21,7 @@ export async function PATCH(
     const {...values} = await req.json(); 
    
   
-    const ownCourse = await db.course.findUnique({
+    const ownCourse = await prisma.course.findUnique({
       where: {
         id: courseId,
         userId,
@@ -31,7 +31,7 @@ export async function PATCH(
     if (!ownCourse) {
       return new NextResponse("Course not found or unauthorized", { status: 401 });
     }
-    const tutorial = await db.tutor.update({
+    const tutorial = await prisma.tutor.update({
       where: {
         id: tutorialId,    
         courseId,

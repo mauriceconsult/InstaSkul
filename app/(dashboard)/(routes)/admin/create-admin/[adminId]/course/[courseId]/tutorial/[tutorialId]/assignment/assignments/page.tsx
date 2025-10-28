@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { DataTable } from "./_components/assignment-data-table";
@@ -20,7 +20,7 @@ export default async function AssignmentsPage({ params }: AssignmentsPageProps) 
   }
   const { adminId, courseId, tutorId } = await params;
 
-  const assignments = await db.assignment.findMany({
+  const assignments = await prisma.assignment.findMany({
     where: {
       tutorId,
       userId,

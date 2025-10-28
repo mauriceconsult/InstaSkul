@@ -2,14 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { columns } from "./_components/noticeboard-columns";
 import { DataTable } from "./_components/noticeboard-data-table";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 
 const NoticeboardsPage = async () => {
   const { userId } = await auth();
   if (!userId) {
     return redirect("/");
   }
-  const noticeboards = await db.noticeboard.findMany({
+  const noticeboards = await prisma.noticeboard.findMany({
     where: {
       userId,
     },

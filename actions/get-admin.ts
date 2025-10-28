@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Attachment, Admin } from "@prisma/client";
 
 interface GetAdminProps {
@@ -12,12 +12,12 @@ export const getAdmin = async ({
   adminId,
 }: GetAdminProps) => {
   try {   
-    const school = await db.school.findUnique({
+    const school = await prisma.school.findUnique({
       where: {        
         id: schoolId,        
       },   
     });
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: {
         id: adminId,
         isPublished: true,
@@ -29,14 +29,14 @@ export const getAdmin = async ({
     let attachments: Attachment[] = [];
     let nextAdmin: Admin | null = null;
     if (userId) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: {
           id: school.id,
         },
       });
     }
     if (admin.userId || userId) {    
-      nextAdmin = await db.admin.findFirst({
+      nextAdmin = await prisma.admin.findFirst({
         where: {
           schoolId: school.id,
           isPublished: true,
@@ -49,29 +49,29 @@ export const getAdmin = async ({
         },
       });
     }
-    // const userProgress = await db.userProgress.findUnique({
-    //   where: {
-    //     userId_adminId: {
-    //       userId,
-    //       adminId,
-    //     },
-    //   },
-    // });
+    const userProgress = await prisma.userProgress.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId: school.id,
+        },
+      },
+    });
     return {
       admin,
       school,      
       attachments,
       nextAdmin,
-      // userProgress,    
+      userProgress,    
     };
   } catch (error) {
-    console.log("[GET_FACULTY_ERROR]", error);
+    console.log("[GET_ADMIN_ERROR]", error);
     return {
       admin: null,
       school: null,      
       attachments: [],
       nextAdmin: null,
-      // userProgress: null,      
+      userProgress: null,      
     };
   }
 };

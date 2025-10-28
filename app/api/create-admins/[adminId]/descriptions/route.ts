@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
 export async function PATCH(
@@ -14,7 +14,7 @@ export async function PATCH(
   if (!description || description.length === 0) {
     return new Response("No data provided", { status: 400 });
   }
-  const admin = await db.admin.findUnique({
+  const admin = await prisma.admin.findUnique({
     where: {
       id: (await params).adminId,
       userId,
@@ -23,7 +23,7 @@ export async function PATCH(
   if (!admin) {
     return new Response("Admin not found", { status: 404 });
   }
-  await db.admin.update({
+  await prisma.admin.update({
     where: {
       id: admin.id,
     },

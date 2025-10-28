@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownCoursework = await db.coursework.findUnique({
+    const ownCoursework = await prisma.coursework.findUnique({
       where: {
         id: (await params).courseworkId,
         userId,
@@ -28,7 +28,7 @@ export async function PATCH(
     if (!ownCoursework) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const coursework = await db.coursework.findUnique({
+    const coursework = await prisma.coursework.findUnique({
       where: {
         id: (await params).courseworkId,
         userId,
@@ -45,7 +45,7 @@ export async function PATCH(
       return new NextResponse("Missing credentials", { status: 400 });
     }
 
-    const publishedcoursework = await db.coursework.update({
+    const publishedcoursework = await prisma.coursework.update({
       where: {
         id: (await params).courseworkId,
         userId,

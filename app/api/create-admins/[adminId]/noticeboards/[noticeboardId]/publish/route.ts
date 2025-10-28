@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -19,7 +19,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId,
@@ -29,7 +29,7 @@ export async function PATCH(
       return new NextResponse("Not found", { status: 404 });
     }
 
-    const noticeboard = await db.noticeboard.findUnique({
+    const noticeboard = await prisma.noticeboard.findUnique({
       where: {
         id: (await params).noticeboardId,
         adminId: (await params).adminId,
@@ -40,7 +40,7 @@ export async function PATCH(
     if (!noticeboard || !noticeboard.description || !noticeboard.title) {
       return new NextResponse("Missing credentials", { status: 400 });
     }
-    const publishedCourse = await db.noticeboard.update({
+    const publishedCourse = await prisma.noticeboard.update({
       where: {
         id: (await params).noticeboardId,
         adminId: (await params).adminId,

@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { DataTable } from "./_components/course-coursenoticeboard-data-table";
 import { columns } from "./_components/course-coursenoticeboard-columns";
 
@@ -10,7 +10,7 @@ const CourseNoticeboardsPage = async () => {
   if (!userId) {
     return redirect("/");
   }
-  const courseNoticeboards = await db.courseNoticeboard.findMany({
+  const courseNoticeboards = await prisma.courseNoticeboard.findMany({
     where: {
       userId,
     },

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownCourseNoticeboard = await db.courseNoticeboard.findUnique({
+    const ownCourseNoticeboard = await prisma.courseNoticeboard.findUnique({
       where: {
         id: (await params).courseCoursenoticeboardId,
         userId,
@@ -28,7 +28,7 @@ export async function PATCH(
     if (!ownCourseNoticeboard) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const courseNoticeboard = await db.courseNoticeboard.findUnique({
+    const courseNoticeboard = await prisma.courseNoticeboard.findUnique({
       where: {
         id: (await params).courseCoursenoticeboardId,
         userId,
@@ -44,7 +44,7 @@ export async function PATCH(
       return new NextResponse("Missing credentials", { status: 400 });
     }
 
-    const publishedcourseNoticeboard = await db.courseNoticeboard.update({
+    const publishedcourseNoticeboard = await prisma.courseNoticeboard.update({
       where: {
         id: (await params).courseCoursenoticeboardId,
         userId,

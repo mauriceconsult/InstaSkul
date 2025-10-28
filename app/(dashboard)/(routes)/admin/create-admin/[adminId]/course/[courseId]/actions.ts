@@ -1,7 +1,6 @@
-// app/(dashboard)/(routes)/admin/create-admin/[adminId]/actions.ts
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
 export async function updateCourse( 
@@ -9,7 +8,7 @@ export async function updateCourse(
   values: { description?: string }
 ) {
   try {
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: { id: courseId },
     });
     if (!course) {
@@ -18,7 +17,7 @@ export async function updateCourse(
     if (values.description && values.description.length > 5000) {
       return { success: false, message: "Description exceeds 5000 characters" };
     }   
-    await db.course.update({
+    await prisma.course.update({
       where: { id: courseId },
       data: { description: values.description || "" },
     });
@@ -37,15 +36,15 @@ export async function onReorderAction(
   updateData: { id: string; position: number }[]
 ) {
   try {
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { id: adminId },
     });
     if (!admin) {
       return { success: false, message: "Course not found" };
     }
-    await db.$transaction(
+    await prisma.$transaction(
       updateData.map((update) =>
-        db.course.update({
+        prisma.course.update({
           where: { id: update.id },
           data: { position: update.position },
         })
@@ -60,13 +59,13 @@ export async function onReorderAction(
 
 export async function onEditAction(adminId: string, id: string) {
   try {
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { id: adminId },
     });
     if (!admin) {
       return { success: false, message: "Course not found" };
     }
-    const course = await db.course.findUnique({ where: { id } });
+    const course = await prisma.course.findUnique({ where: { id } });
     if (!course) {
       return { success: false, message: "Course not found" };
     }
@@ -82,7 +81,7 @@ export async function createCourse(
   values: { title: string; description?: string }
 ) {
   try {
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { id: adminId },
     });
     if (!admin) {
@@ -92,7 +91,7 @@ export async function createCourse(
       return { success: false, message: "Description exceeds 5000 characters" };
     }
 
-    const course = await db.course.create({
+    const course = await prisma.course.create({
       data: {
         title: values.title,
         description: values.description || "",

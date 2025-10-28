@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -12,7 +12,7 @@ export async function POST(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const courseworkOwner = await db.coursework.findUnique({
+    const courseworkOwner = await prisma.coursework.findUnique({
       where: {
         id: (await params).courseworkId,
       },
@@ -21,7 +21,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
-    const attachment = await db.attachment.create({
+    const attachment = await prisma.attachment.create({
       data: {
         url,       
         courseworkId: (await params).courseworkId,       

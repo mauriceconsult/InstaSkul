@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import PayrollSidebar from "./_components/payroll-sidebar";
 import { PayrollNavbar } from "./_components/payroll-navbar";
@@ -16,7 +16,7 @@ const PayrollLayout = async ({
     redirect("/");
   }
 
-  const payroll = await db.payroll.findUnique({
+  const payroll = await prisma.payroll.findUnique({
     where: {
       id: (await params).payrollId,
     },

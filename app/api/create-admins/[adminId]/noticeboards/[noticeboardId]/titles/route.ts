@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -12,7 +12,7 @@ export async function DELETE(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId: userId,
@@ -21,7 +21,7 @@ export async function DELETE(
     if (!admin) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const noticeboard = await db.noticeboard.findUnique({
+    const noticeboard = await prisma.noticeboard.findUnique({
       where: {
         id: (await params).noticeboardId,
         userId: userId,
@@ -30,7 +30,7 @@ export async function DELETE(
     if (!noticeboard) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const deletedNoticeboard = await db.noticeboard.delete({
+    const deletedNoticeboard = await prisma.noticeboard.delete({
       where: {
         id: (await params).noticeboardId,
       },
@@ -53,7 +53,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unathorized", { status: 401 });
     }
-    const admin = await db.admin.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: {
         id: adminId,
         userId,
@@ -62,7 +62,7 @@ export async function PATCH(
     if (!admin) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const noticeboard = await db.noticeboard.update({
+    const noticeboard = await prisma.noticeboard.update({
       where: {
         id: noticeboardId,
         userId,

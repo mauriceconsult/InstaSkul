@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownCoursework = await db.coursework.findUnique({
+    const ownCoursework = await prisma.coursework.findUnique({
       where: {
         id: (await params).courseworkId,
         userId,
@@ -28,7 +28,7 @@ export async function PATCH(
     if (!ownCoursework) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const unpublishedCoursework = await db.coursework.update({
+    const unpublishedCoursework = await prisma.coursework.update({
       where: {
         id: (await params).courseworkId,
         userId,
@@ -37,14 +37,14 @@ export async function PATCH(
         isPublished: false,
       },
     });
-    const publishedCoursework = await db.coursework.findMany({
+    const publishedCoursework = await prisma.coursework.findMany({
       where: {
         id: (await params).courseworkId,
         isPublished: true,
       },
     });
     if (!publishedCoursework.length) {
-      await db.coursework.update({
+      await prisma.coursework.update({
         where: {
           id: (await params).courseworkId,
         },

@@ -1,75 +1,91 @@
-// D:\lms\app\(dashboard)\(routes)\courses\[courseId]\page.tsx
-import { db } from "@/lib/db";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
 
-const CourseIdPage = async ({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ courseId: string }>;
-}) => {
+}
+
+export default async function StudentCoursePage({ params }: PageProps) {
   const { courseId } = await params;
-  const user = await currentUser();
+  const { userId: currentUserId } = await auth();
 
-  if (!user || !user.id) {
-    console.error(
-      `[${new Date().toISOString()} CoursePage] Unauthorized access for course ${courseId}`
-    );
-    return redirect("/sign-in");
+  if (!currentUserId) {
+    return <div className="p-6">Please sign in to view this course.</div>;
   }
 
-  const course = await db.course.findUnique({
-    where: {
-      id: courseId,
-      isPublished: true,
-    },
+  const tutorials = await prisma.tutor.findMany({
+    where: { courseId, isPublished: true },
     include: {
-      tutors: {
-        where: {
-          isPublished: true,
-        },
-        orderBy: {
-          position: "asc",
+      assignments: {
+        where: { isPublished: true },
+        include: {
+          assignmentSubmissions: {
+            where: { userId: currentUserId },
+            select: { id: true },
+          },
         },
       },
     },
+    orderBy: { position: "asc" },
   });
 
-  if (!course) {
-    console.error(
-      `[${new Date().toISOString()} CoursePage] Course not found or not published: ${courseId}`
-    );
-    return redirect("/");
-  }
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8">Course Content</h1>
 
-  const userProgress = await db.userProgress.findUnique({
-    where: {
-      userId_courseId: {
-        userId: user.id,
-        courseId: courseId,
-      },
-    },
-    select: { isEnrolled: true },
-  });
+      {tutorials.length === 0 ? (
+        <p className="text-gray-500">No published tutorials yet.</p>
+      ) : (
+        <div className="space-y-10">
+          {tutorials.map((tutorial) => (
+            <div key={tutorial.id} className="border-b pb-8 last:border-0">
+              <h2 className="text-2xl font-semibold mb-4 text-blue-700">
+                {tutorial.title}
+              </h2>
 
-  if (!userProgress?.isEnrolled) {
-    console.log(
-      `[${new Date().toISOString()} CoursePage] User ${
-        user.id
-      } not enrolled in course ${courseId}`
-    );
-    return redirect(`/courses/${courseId}/pay`);
-  }
-
-  console.log(
-    `[${new Date().toISOString()} CoursePage] User ${
-      user.id
-    } enrolled in course ${courseId}, redirecting to first tutor`
+              {tutorial.assignments.length === 0 ? (
+                <p className="text-gray-500">No assignments available.</p>
+              ) : (
+                <div className="space-y-3">
+                  {tutorial.assignments.map((assignment) => {
+                    const isSubmitted = assignment.assignmentSubmissions.length > 0;
+                    return (
+                      <div
+                        key={assignment.id}
+                        className="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                      >
+                        <div>
+                          <h3 className="font-medium text-lg">{assignment.title}</h3>
+                          {assignment.description && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              {assignment.description}
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          {isSubmitted ? (
+                            <span className="text-green-600 font-semibold text-sm">
+                              Submitted
+                            </span>
+                          ) : (
+                            <Link
+                              href={`/courses/${courseId}/tutorials/${tutorial.id}/assignments/${assignment.id}`}
+                              className="text-blue-600 hover:underline font-medium text-sm"
+                            >
+                              Submit Now
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
-
-  return redirect(
-    `/courses/${course.id}/tutorials/${course.tutors[0]?.id || ""}`
-  );
-};
-
-export default CourseIdPage;
+}

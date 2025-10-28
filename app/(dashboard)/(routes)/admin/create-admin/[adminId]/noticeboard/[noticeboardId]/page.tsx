@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { LayoutDashboard, File, ArrowLeft } from "lucide-react";
@@ -24,7 +24,7 @@ const NoticeboardIdPage = async ({
     return redirect("/");
   }
 
-  const noticeboard = await db.noticeboard.findFirst({
+  const noticeboard = await prisma.noticeboard.findFirst({
     where: {
       id: (await params).noticeboardId,
       userId,
@@ -37,7 +37,7 @@ const NoticeboardIdPage = async ({
       },
     },
   });
-  const admin = await db.admin.findMany({
+  const admin = await prisma.admin.findMany({
     orderBy: {
       title: "asc",
     },

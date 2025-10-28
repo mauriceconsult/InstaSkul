@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 
 interface GetCourseNoticeboardsParams {
   title?: string;
@@ -20,7 +20,7 @@ export const getCourseNoticeboards = async (
       userId,
     } = params;
 
-    const courseNoticeboards = await db.courseNoticeboard.findMany({
+    const courseNoticeboards = await prisma.courseNoticeboard.findMany({
       where: {
         courseId,
         userId, // Add userId filter

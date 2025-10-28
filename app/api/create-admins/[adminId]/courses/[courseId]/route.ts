@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -13,7 +13,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
    
-    const lastCourse = await db.course.findFirst({
+    const lastCourse = await prisma.course.findFirst({
       where: {
         id: (await params).courseId,
       },
@@ -22,7 +22,7 @@ export async function POST(
       },
     });
     const newPosition = lastCourse ? (lastCourse.position ?? 0) + 1 : 1;
-    const course = await db.course.create({
+    const course = await prisma.course.create({
       data: {
         title,
         id: (await params).courseId,
@@ -46,7 +46,7 @@ export async function DELETE(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const adminOwner = db.admin.findUnique({
+    const adminOwner = prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId: userId,
@@ -55,7 +55,7 @@ export async function DELETE(
     if (!adminOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const courseOwner = db.course.findUnique({
+    const courseOwner = prisma.course.findUnique({
       where: {
         id: (await params).courseId,
         userId: userId,
@@ -64,7 +64,7 @@ export async function DELETE(
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         id: (await params).courseId,
         userId: userId,
@@ -83,7 +83,7 @@ export async function DELETE(
     if (!course) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const deletedFaculty = await db.admin.delete({
+    const deletedFaculty = await prisma.admin.delete({
       where: {
         id: (await params).adminId,
         userId: userId,

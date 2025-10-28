@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
@@ -53,7 +53,7 @@ const CourseIdPage = async ({
     return <div>Invalid admin or course ID</div>;
   }
 
-  const course = await db.course.findUnique({
+  const course = await prisma.course.findUnique({
     where: {
       id: resolvedParams.courseId,
       userId,
@@ -68,14 +68,14 @@ const CourseIdPage = async ({
     },
   });
 
-  const admin = await db.admin.findUnique({
+  const admin = await prisma.admin.findUnique({
     where: {
       id: resolvedParams.adminId,
       userId,
     },
   });
 
-  const admins = await db.admin.findMany({
+  const admins = await prisma.admin.findMany({
     where: { userId },
     select: {
       id: true,

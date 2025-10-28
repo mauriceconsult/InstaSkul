@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { CourseSearchInput } from "./_components/course-search-input";
@@ -30,7 +30,7 @@ const CourseSearchPage = async ({ searchParams }: CourseSearchPageProps) => {
 
   const { title, courseId, adminId } = await searchParams;
 
-  const courses = await db.course.findMany({
+  const courses = await prisma.course.findMany({
     where: {
       isPublished: true,
       title: {

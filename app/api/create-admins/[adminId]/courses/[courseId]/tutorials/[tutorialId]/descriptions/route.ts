@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
 export async function PATCH(
@@ -14,7 +14,7 @@ export async function PATCH(
   if (!description || description.length === 0) {
     return new Response("No data provided", { status: 400 });
   }
-  const tutorial = await db.tutor.findUnique({
+  const tutorial = await prisma.tutor.findUnique({
     where: {
       id: (await params).tutorialId,
       userId,
@@ -23,7 +23,7 @@ export async function PATCH(
   if (!tutorial) {
     return new Response("Tutor not found", { status: 404 });
   }
-  await db.tutor.update({
+  await prisma.tutor.update({
     where: {
       id: tutorial.id,
     },

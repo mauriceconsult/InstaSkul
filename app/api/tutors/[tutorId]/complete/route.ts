@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function POST(
 
   const { tutorId } = await params;
   try {
-    const updated = await db.userProgress.updateMany({
+    const updated = await prisma.userProgress.updateMany({
       where: { userId, tutorId, isEnrolled: true },
       data: { isCompleted: true },
     });

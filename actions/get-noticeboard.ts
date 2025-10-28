@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Attachment, Noticeboard } from "@prisma/client";
 
 interface GetNoticeboardProps {
@@ -12,32 +12,32 @@ export const getNoticeboard = async ({
   noticeboardId,
 }: GetNoticeboardProps) => {
   try {
-    // const admin = await db.admin.findUnique({
-    //   where: {
-    //     isPublished: true,
-    //     id: adminId,
-    //   },
-    // });
-    const noticeboard = await db.noticeboard.findUnique({
+    const admin = await prisma.admin.findUnique({
+      where: {
+        isPublished: true,
+        id: adminId,
+      },
+    });
+    const noticeboard = await prisma.noticeboard.findUnique({
       where: {
         id: noticeboardId,
         isPublished: true,
       },
     });
     if (!adminId || !noticeboard) {
-      throw new Error("Faculty ID or Noticeboard not found");
+      throw new Error("Admin ID or Noticeboard not found");
     }
     let attachments: Attachment[] = [];
     let nextNoticeboard: Noticeboard | null = null;
     if (userId) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: {
           adminId: adminId,
         },
       });
     }
     if (noticeboard.userId || userId) {
-      nextNoticeboard = await db.noticeboard.findFirst({
+      nextNoticeboard = await prisma.noticeboard.findFirst({
         where: {
           adminId: adminId,
           isPublished: true,
@@ -52,7 +52,7 @@ export const getNoticeboard = async ({
     }
     return {
       noticeboard,
-      // admin,
+      admin,
       attachments,
       nextNoticeboard,
     };
@@ -60,7 +60,7 @@ export const getNoticeboard = async ({
     console.log("[GET_NOTICEBOARD_ERROR]", error);
     return {
       noticeboard: null,
-      // admin: null,
+      admin: null,
       attachments: [],
       nextNoticeboard: null,
     };

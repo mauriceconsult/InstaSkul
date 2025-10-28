@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { PayrollTitleForm } from "./_components/payroll-title-form";
@@ -9,7 +9,7 @@ import { PayrollAttachmentForm } from "./_components/payroll-attachment-form";
 import { Banner } from "@/components/banner";
 import { PayrollActions } from "./_components/payroll-actions";
 import Link from "next/link";
-// import { PayrollAdminPayrollForm } from "./_components/payroll-admin-form";
+
 
 const PayrollIdPage = async ({
   params,
@@ -23,7 +23,7 @@ const PayrollIdPage = async ({
     return redirect("/");
   }
 
-   const payroll = await db.payroll.findUnique({
+   const payroll = await prisma.payroll.findUnique({
      where: {
        id: (await params).payrollId,
        userId,
@@ -41,7 +41,7 @@ const PayrollIdPage = async ({
        },
      },
    });
-  const school = await db.school.findMany({
+  const school = await prisma.school.findMany({
     orderBy: {
       name: "asc",
     },

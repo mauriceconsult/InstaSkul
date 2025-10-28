@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 
@@ -20,7 +20,7 @@ export async function updateAssignment(
       "params:",
       { adminId, courseId, tutorialId }
     );
-    const assignment = await db.assignment.findUnique({
+    const assignment = await prisma.assignment.findUnique({
       where: { id: assignmentId, tutorId: tutorialId },
     });
     if (!assignment) {
@@ -29,7 +29,7 @@ export async function updateAssignment(
     if (values.description && values.description.length > 5000) {
       return { success: false, message: "Description exceeds 5000 characters" };
     }
-    const updatedAssignment = await db.assignment.update({
+    const updatedAssignment = await prisma.assignment.update({
       where: { id: assignmentId },
       data: { description: values.description || "" },
     });
@@ -67,13 +67,13 @@ export async function onEditAction(
       "params:",
       { adminId, courseId }
     );
-    const tutor = await db.tutor.findUnique({
+    const tutor = await prisma.tutor.findUnique({
       where: { id: tutorId, courseId, adminId },
     });
     if (!tutor) {
       return { success: false, message: "Tutor not found" };
     }
-    const assignment = await db.assignment.findUnique({
+    const assignment = await prisma.assignment.findUnique({
       where: { id: assignmentId, tutorId },
     });
     if (!assignment) {
@@ -106,7 +106,7 @@ export async function createAssignment(
       "params:",
       { adminId, courseId }
     );
-    const tutor = await db.tutor.findUnique({
+    const tutor = await prisma.tutor.findUnique({
       where: { id: tutorId, courseId, adminId },
     });
     if (!tutor) {
@@ -115,7 +115,7 @@ export async function createAssignment(
     if (values.description && values.description.length > 5000) {
       return { success: false, message: "Description exceeds 5000 characters" };
     }
-    const assignment = await db.assignment.create({
+    const assignment = await prisma.assignment.create({
       data: {
         title: values.title,
         description: values.description || "",

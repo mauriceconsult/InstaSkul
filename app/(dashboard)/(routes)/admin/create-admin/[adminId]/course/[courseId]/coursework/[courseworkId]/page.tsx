@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { LayoutDashboard, ArrowLeft } from "lucide-react";
@@ -47,7 +47,7 @@ const CourseworkIdPage = async ({
     );
   }
 
-  const coursework = await db.coursework.findUnique({
+  const coursework = await prisma.coursework.findUnique({
     where: {
       id: resolvedParams.courseworkId,
       courseId: resolvedParams.courseId,
@@ -86,7 +86,7 @@ const CourseworkIdPage = async ({
   }
 
   // Fetch all courses for the admin to populate Combobox options
-  const courses = await db.course.findMany({
+  const courses = await prisma.course.findMany({
     where: {
       adminId: resolvedParams.adminId,
       userId,

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
@@ -31,7 +31,7 @@ const AssignmentIdPage = async ({
   }
 
   const resolvedParams = await params;
-  const assignment = await db.assignment.findUnique({
+  const assignment = await prisma.assignment.findUnique({
     where: {
       id: resolvedParams.assignmentId,
       userId,
@@ -41,7 +41,7 @@ const AssignmentIdPage = async ({
     },
   });
 
-  const tutor = await db.tutor.findMany({
+  const tutor = await prisma.tutor.findMany({
     orderBy: {
       title: "asc",
     },

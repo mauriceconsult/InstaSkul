@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -12,7 +12,7 @@ export async function POST(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const adminOwner = await db.admin.findUnique({
+    const adminOwner = await prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
       },
@@ -21,7 +21,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
        
-    const attachment = await db.attachment.create({
+    const attachment = await prisma.attachment.create({
       data: {
         url,        
         adminId: (await params).adminId,

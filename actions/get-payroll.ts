@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Attachment, Payroll } from "@prisma/client";
 
 interface GetPayrollProps {
@@ -12,12 +12,12 @@ export const getPayroll = async ({
   payrollId,
 }: GetPayrollProps) => {
   try {   
-    const school = await db.school.findUnique({
+    const school = await prisma.school.findUnique({
       where: {        
         id: schoolId,        
       },   
     });
-    const payroll = await db.payroll.findUnique({
+    const payroll = await prisma.payroll.findUnique({
       where: {
         id: payrollId,
         isPublished: true,
@@ -29,14 +29,14 @@ export const getPayroll = async ({
     let attachments: Attachment[] = [];
     let nextPayroll: Payroll | null = null;
     if (userId) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: {
           id: school.id,
         },
       });
     }
     if (payroll.userId || userId) {    
-      nextPayroll = await db.payroll.findFirst({
+      nextPayroll = await prisma.payroll.findFirst({
         where: {
           schoolId: school.id,
           isPublished: true,

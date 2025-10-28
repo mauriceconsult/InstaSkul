@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Schools } from "@/app/(dashboard)/(routes)/search/_components/schools";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -17,7 +17,7 @@ const PayrollSearchPage = async ({ searchParams }: PayrollSearchPageProps) => {
   if (!userId) {
     return redirect("/");
   }
-  const schools = await db.school.findMany({
+  const schools = await prisma.school.findMany({
     orderBy: {
       name: "asc",
     },

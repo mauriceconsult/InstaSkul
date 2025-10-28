@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Assignment, Attachment, Tutor } from "@prisma/client";
 
 export type AssignmentWithRelations = Assignment & {
@@ -17,7 +17,7 @@ export const getAssignments = async ({
   tutorId,
 }: GetAssignments): Promise<AssignmentWithRelations[]> => {
   try {
-    const assignments = await db.assignment.findMany({
+    const assignments = await prisma.assignment.findMany({
       where: {
         isPublished: true,
         title: title ? { contains: title } : undefined,

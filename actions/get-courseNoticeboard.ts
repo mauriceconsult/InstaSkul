@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Attachment, CourseNoticeboard } from "@prisma/client";
 
 interface GetCourseNoticeboardProps {
@@ -12,13 +12,13 @@ export const getCourseNoticeboard = async ({
   courseNoticeboardId,
 }: GetCourseNoticeboardProps) => {
   try {   
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: {
         isPublished: true,
         id: courseId,
       },   
     });
-    const courseNoticeboard = await db.courseNoticeboard.findUnique({
+    const courseNoticeboard = await prisma.courseNoticeboard.findUnique({
       where: {
         id: courseNoticeboardId,
         isPublished: true,
@@ -30,14 +30,14 @@ export const getCourseNoticeboard = async ({
     let attachments: Attachment[] = [];
     let nextCourseNoticeboard: CourseNoticeboard | null = null;
     if (userId) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: {
           courseId: courseId,
         },
       });
     }
     if (courseNoticeboard.userId || userId) {    
-      nextCourseNoticeboard = await db.courseNoticeboard.findFirst({
+      nextCourseNoticeboard = await prisma.courseNoticeboard.findFirst({
         where: {
           courseId: courseId,
           isPublished: true,

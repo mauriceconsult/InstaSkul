@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -13,7 +13,7 @@ export async function POST(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const payrollOwner = await db.payroll.findUnique({
+    const payrollOwner = await prisma.payroll.findUnique({
       where: {
         id: (await params).payrollId,
         userId,
@@ -23,7 +23,7 @@ export async function POST(
     if (!payrollOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }   
-    const lastCourse = await db.course.findFirst({
+    const lastCourse = await prisma.course.findFirst({
       where: {
         id: (await params).payrollId,
       },
@@ -33,7 +33,7 @@ export async function POST(
     });
     const newPosition = lastCourse ? (lastCourse.position ?? 0) + 1 : 1;
 
-    const course = await db.course.create({
+    const course = await prisma.course.create({
       data: {
         title,
         id: (await params).payrollId,

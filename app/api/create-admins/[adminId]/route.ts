@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -13,7 +13,7 @@ export async function POST(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const adminOwner = db.admin.findUnique({
+    const adminOwner = prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId: userId,
@@ -22,7 +22,7 @@ export async function POST(
     if (!adminOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const lastAdmin = await db.admin.findFirst({
+    const lastAdmin = await prisma.admin.findFirst({
       where: {
         id: (await params).adminId,
       },
@@ -31,7 +31,7 @@ export async function POST(
       },
     });
     const newPosition = lastAdmin ? (lastAdmin.position ?? 0) + 1 : 1;
-    const admin = await db.admin.create({
+    const admin = await prisma.admin.create({
       data: {
         title,
         id: (await params).adminId,
@@ -56,7 +56,7 @@ export async function DELETE(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const adminOwner = db.admin.findUnique({
+    const adminOwner = prisma.admin.findUnique({
       where: {
         id: (await params).adminId,
         userId: userId,
@@ -82,7 +82,7 @@ export async function DELETE(
     if (!adminOwner) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const deletedAdmin = await db.admin.delete({
+    const deletedAdmin = await prisma.admin.delete({
       where: {
         id: (await params).adminId,
         userId: userId,

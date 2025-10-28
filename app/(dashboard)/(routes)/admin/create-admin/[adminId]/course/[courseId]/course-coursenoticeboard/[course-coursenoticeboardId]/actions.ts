@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
 export async function createCourseNoticeboard(
@@ -17,7 +17,7 @@ export async function createCourseNoticeboard(
       return { success: false, message: "Unauthorized" };
     }
 
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: { id: courseId },
     });
 
@@ -25,13 +25,13 @@ export async function createCourseNoticeboard(
       return { success: false, message: "Course not found" };
     }
 
-    const noticeboard = await db.courseNoticeboard.create({
+    const noticeboard = await prisma.courseNoticeboard.create({
       data: {
         title: data.title,
         courseId,
         userId,
         position:
-          (await db.courseNoticeboard.count({ where: { courseId } })) + 1,
+          (await prisma.courseNoticeboard.count({ where: { courseId } })) + 1,
       },
     });
 
@@ -57,7 +57,7 @@ export async function onEditCourseworkAction(
       return { success: false, message: "Unauthorized" };
     }
 
-    const coursework = await db.coursework.findUnique({
+    const coursework = await prisma.coursework.findUnique({
       where: { id: courseworkId },
       include: { course: true },
     });
@@ -69,7 +69,7 @@ export async function onEditCourseworkAction(
       };
     }
 
-    await db.coursework.update({
+    await prisma.coursework.update({
       where: { id: courseworkId },
       data: {
         title: data.title || coursework.title,
@@ -98,7 +98,7 @@ export async function onEditCourseNoticeboardAction(
       return { success: false, message: "Unauthorized" };
     }
 
-    const noticeboard = await db.courseNoticeboard.findUnique({
+    const noticeboard = await prisma.courseNoticeboard.findUnique({
       where: { id: courseNoticeboardId },
       include: { course: true },
     });
@@ -131,7 +131,7 @@ export async function onReorderCourseworkAction(
       return { success: false, message: "Unauthorized" };
     }
 
-    const courseworks = await db.coursework.findMany({
+    const courseworks = await prisma.coursework.findMany({
       where: {
         courseId,
         id: { in: courseworkIds },
@@ -145,9 +145,9 @@ export async function onReorderCourseworkAction(
       };
     }
 
-    await db.$transaction(
+    await prisma.$transaction(
       courseworkIds.map((id, index) =>
-        db.coursework.update({
+        prisma.coursework.update({
           where: { id },
           data: { position: index + 1 },
         })
@@ -178,7 +178,7 @@ export async function onReorderCourseNoticeboardAction(
       return { success: false, message: "Unauthorized" };
     }
 
-    const noticeboards = await db.courseNoticeboard.findMany({
+    const noticeboards = await prisma.courseNoticeboard.findMany({
       where: {
         courseId,
         id: { in: noticeboardIds },
@@ -192,9 +192,9 @@ export async function onReorderCourseNoticeboardAction(
       };
     }
 
-    await db.$transaction(
+    await prisma.$transaction(
       noticeboardIds.map((id, index) =>
-        db.courseNoticeboard.update({
+        prisma.courseNoticeboard.update({
           where: { id },
           data: { position: index + 1 },
         })

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -11,7 +11,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownAssignment = await db.assignment.findUnique({
+    const ownAssignment = await prisma.assignment.findUnique({
       where: {
         id: (await params).assignmentId,
         userId,
@@ -21,7 +21,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }   
 
-    const unpublishedAssignment = await db.assignment.update({
+    const unpublishedAssignment = await prisma.assignment.update({
       where: {
         id: (await params).assignmentId,
         tutorId: (await params).tutorialId,
@@ -31,7 +31,7 @@ export async function PATCH(
         isPublished: false,
       },
     });
-    const publishedAssignments = await db.assignment.findMany({
+    const publishedAssignments = await prisma.assignment.findMany({
       where: {
         id: (await params).assignmentId,
         tutorId: (await params).tutorialId,
@@ -39,7 +39,7 @@ export async function PATCH(
       },
     });
     if (!publishedAssignments.length) {
-      await db.tutor.update({
+      await prisma.tutor.update({
         where: {
           id: (await params).tutorialId,
         },

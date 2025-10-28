@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { DataTable } from "./_components/tutor-data-table";
@@ -20,7 +20,7 @@ export default async function TutorialsPage({ params }: TutorialsPageProps) {
   }
   const { adminId, courseId } = await params;
 
-  const tutors = await db.tutor.findMany({
+  const tutors = await prisma.tutor.findMany({
     where: {
       courseId,
       userId,

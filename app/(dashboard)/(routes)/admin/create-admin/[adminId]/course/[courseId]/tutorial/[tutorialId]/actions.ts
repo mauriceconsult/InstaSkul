@@ -1,20 +1,20 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Prisma, Tutor } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function onEditAction(courseId: string, tutorId: string) {
   try {
     console.log("onEditAction called with:", { courseId, tutorId });
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: { id: courseId },
     });
     if (!course) {
       console.error("Course not found:", { courseId });
       return { success: false, message: "Course not found" };
     }
-    const tutor = await db.tutor.findUnique({
+    const tutor = await prisma.tutor.findUnique({
       where: { id: tutorId, courseId },
     });
     if (!tutor) {
@@ -33,14 +33,14 @@ export async function createTutor(
   values: { title: string }
 ): Promise<{ success: boolean; message: string; data?: Tutor }> {
   try {
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: { id: courseId },
     });
     if (!course) {
       console.error("Course not found:", { courseId });
       return { success: false, message: "Course not found" };
     }
-    const tutor = await db.tutor.create({
+    const tutor = await prisma.tutor.create({
       data: {
         title: values.title,
         userId: course.userId,

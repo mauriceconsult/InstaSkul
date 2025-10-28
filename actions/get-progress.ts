@@ -1,11 +1,11 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 
 export const getProgress = async (
   userId: string,
   courseId: string
 ): Promise<number> => {
   try {
-    const publishedTutorials = await db.tutor.findMany({
+    const publishedTutorials = await prisma.tutor.findMany({
       where: {
         courseId: courseId,
         isPublished: true,
@@ -17,7 +17,7 @@ export const getProgress = async (
     const publishedTutorialsIds = publishedTutorials.map(
       (tutorial) => tutorial.id
     );
-    const validCompletedTutorials = await db.userProgress.count({
+    const validCompletedTutorials = await prisma.userProgress.count({
       where: {
         userId: userId,
         tutorId: {

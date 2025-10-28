@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -13,7 +13,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }    
     
-    const tutorial = await db.tutor.findUnique({
+    const tutorial = await prisma.tutor.findUnique({
       where: {
         id: (await params).tutorialId,
         courseId: (await params).courseId,
@@ -23,7 +23,7 @@ export async function DELETE(
     if (!tutorial) {
       return new NextResponse("Not found", { status: 404 });
     }
-    const deletedTutorial = await db.tutor.delete({
+    const deletedTutorial = await prisma.tutor.delete({
       where: {
         id: (await params).tutorialId,
       },
@@ -46,7 +46,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unathorized", { status: 401 });
     }    
-    const tutorial = await db.tutor.update({
+    const tutorial = await prisma.tutor.update({
       where: {
         id: tutorialId,
         userId,

@@ -1,25 +1,28 @@
+// components/file-upload.tsx
 "use client";
-import { UploadDropzone } from "@/lib/uploadthing";
-import { OurFileRouter } from "@/app/api/uploadthing/core";
-import toast from "react-hot-toast";
+
+import { UploadButton } from "@uploadthing/react";
+import type { OurFileRouter } from "@/lib/server/uploadthing";
 
 interface FileUploadProps {
-  onChange: (url?: string) => void;
+  onChange: (url: string) => void;
   endpoint: keyof OurFileRouter;
 }
 
-
 export function FileUpload({ onChange, endpoint }: FileUploadProps) {
   return (
-    <UploadDropzone
+    <UploadButton<OurFileRouter, keyof OurFileRouter>
       endpoint={endpoint}
       onClientUploadComplete={(res) => {
-        onChange(res?.[0].url);
+        console.log("Upload complete:", res);
+        if (res?.[0]?.url) {
+          onChange(res[0].url);
+        }
       }}
-      onUploadError={(error: Error) => {
-        toast.error(`${error?.message}`);
+      onUploadError={(err) => {
+        console.error("Upload failed:", err);
+        alert("Upload failed");
       }}
     />
-  )
+  );
 }
-  

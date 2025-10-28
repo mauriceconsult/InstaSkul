@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Tutor, Course } from "@prisma/client";
 
 export type TutorialWithCourse = Tutor & {
@@ -17,7 +17,7 @@ export const getTutors = async ({
   courseId,
 }: GetTutors): Promise<TutorialWithCourse[]> => {
   try {
-    const tutorials = await db.tutor.findMany({
+    const tutorials = await prisma.tutor.findMany({
       where: {
         isPublished: true,
         title: title ? { contains: title } : undefined,

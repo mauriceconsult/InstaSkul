@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -20,7 +20,7 @@ export async function DELETE(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const tutorOwner = await db.tutor.findUnique({
+    const tutorOwner = await prisma.tutor.findUnique({
       where: {
         id: (await params).tutorialId,
         userId: userId,
@@ -29,7 +29,7 @@ export async function DELETE(
     if (!tutorOwner) {
       return new NextResponse("Unathorized", { status: 401 });
     }
-    const attachment = await db.attachment.delete({
+    const attachment = await prisma.attachment.delete({
       where: {
         tutorId: (await params).tutorialId,
         id: (await params).attachmentId,

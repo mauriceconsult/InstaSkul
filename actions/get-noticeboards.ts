@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Noticeboard, Admin, Attachment } from "@prisma/client";
 
 export type NoticeboardWithRelations = Noticeboard & {
@@ -17,7 +17,7 @@ export const getNoticeboards = async ({
   adminId,
 }: GetNoticeboards): Promise<NoticeboardWithRelations[]> => {
   try {
-    const noticeboards = await db.noticeboard.findMany({
+    const noticeboards = await prisma.noticeboard.findMany({
       where: {
         isPublished: true,
         title: title ? { contains: title } : undefined,

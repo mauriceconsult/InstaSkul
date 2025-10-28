@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -18,7 +18,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownPayroll = await db.payroll.findUnique({
+    const ownPayroll = await prisma.payroll.findUnique({
       where: {
         id: (await params).payrollId,
         userId,
@@ -27,7 +27,7 @@ export async function PATCH(
     if (!ownPayroll) {
       return new NextResponse("Unauthorized", { status: 401 });
     }   
-    const unpublishedpayroll = await db.payroll.update({
+    const unpublishedpayroll = await prisma.payroll.update({
       where: {
         id: (await params).payrollId,
         userId,
@@ -36,14 +36,14 @@ export async function PATCH(
         isPublished: false,
       },
     });
-    const publishedpayroll = await db.payroll.findMany({
+    const publishedpayroll = await prisma.payroll.findMany({
       where: {
         id: (await params).payrollId,
         isPublished: true,
       }
     });
     if (!publishedpayroll.length) {
-      await db.payroll.update({
+      await prisma.payroll.update({
         where: {
           id: (await params).payrollId,
         },

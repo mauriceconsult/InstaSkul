@@ -1,16 +1,16 @@
 // app/payroll/create-payroll/[payrollId]/actions.ts
 "use server";
 
-import { db } from "@/lib/db"; // Adjust path to your Prisma client
+import { prisma } from "@/lib/db";
 
 export async function onReorderAction(
   payrollId: string,
   updateData: { id: string; position: number }[]
 ) {
   try {
-    await db.$transaction(
+    await prisma.$transaction(
       updateData.map((update) =>
-        db.adminPayroll.update({
+        prisma.adminPayroll.update({
           where: { id: update.id },
           data: { position: update.position },
         })
@@ -35,7 +35,7 @@ export async function createFacultyPayroll(
   values: { title: string }
 ) {
   try {
-    await db.adminPayroll.create({
+    await prisma.adminPayroll.create({
       data: {
         title: values.title,
         payrollId,

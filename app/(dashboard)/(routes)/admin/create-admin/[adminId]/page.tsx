@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { LayoutDashboard, ListChecks, File } from "lucide-react";
@@ -44,7 +44,7 @@ const AdminIdPage = async ({
     );
   }
 
-  const admin = await db.admin.findUnique({
+  const admin = await prisma.admin.findUnique({
     where: {
       id: resolvedParams.adminId,
       userId,
@@ -58,7 +58,7 @@ const AdminIdPage = async ({
 
   console.log("Admin query result:", JSON.stringify(admin, null, 2));
 
-  const school = await db.school.findMany({
+  const school = await prisma.school.findMany({
     select: {
       id: true,
       name: true,

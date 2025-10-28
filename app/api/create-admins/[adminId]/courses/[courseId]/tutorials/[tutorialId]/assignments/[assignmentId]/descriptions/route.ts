@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
 export async function PATCH(
@@ -18,7 +18,7 @@ export async function PATCH(
   if (!description || description.length === 0) {
     return new Response("No data provided", { status: 400 });
   }
-  const assignment = await db.assignment.findUnique({
+  const assignment = await prisma.assignment.findUnique({
     where: {
       id: (await params).assignmentId,
       userId,
@@ -27,7 +27,7 @@ export async function PATCH(
   if (!assignment) {
     return new Response("Assignment not found", { status: 404 });
   }
-  await db.assignment.update({
+  await prisma.assignment.update({
     where: {
       id: assignment.id,
     },

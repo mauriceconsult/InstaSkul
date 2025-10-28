@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function GET(
 
     const { tutorId } = await params;
 
-    const tutor = await db.tutor.findFirst({
+    const tutor = await prisma.tutor.findFirst({
       where: { id: tutorId, userId },
       select: {
         id: true,
@@ -39,12 +39,12 @@ export async function GET(
       );
     }
 
-    const userProgress = await db.userProgress.findFirst({
+    const userProgress = await prisma.userProgress.findFirst({
       where: { userId, tutorId },
       select: { isCompleted: true },
     });
 
-    const nextTutor = await db.tutor.findFirst({
+    const nextTutor = await prisma.tutor.findFirst({
       where: {
         courseId: tutor.courseId,
         isPublished: true,

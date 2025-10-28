@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server.js";
 
@@ -23,7 +23,7 @@ export async function PATCH(
 
     const { courseId, tutorialId } = await params;
 
-    const tutor = await db.tutor.findUnique({
+    const tutor = await prisma.tutor.findUnique({
       where: {
         id: tutorialId,
         courseId,
@@ -52,7 +52,7 @@ export async function PATCH(
       );
     }
 
-    const publishedTutorial = await db.tutor.update({
+    const publishedTutorial = await prisma.tutor.update({
       where: {
         id: tutorialId,
         courseId,

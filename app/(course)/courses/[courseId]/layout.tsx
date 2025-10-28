@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { CourseNavbar } from "./_components/course-navbar";
 import { CourseSidebar } from "./_components/course-sidebar";
 import { getProgress } from "@/actions/get-progress";
@@ -21,7 +21,7 @@ const CourseLayout = async ({ children, params }: CourseLayoutProps) => {
     const { courseId } = await params;
     console.log("[CourseLayout] Fetching course:", courseId);
 
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: { id: courseId },
       include: {
         tutors: {
@@ -46,7 +46,7 @@ const CourseLayout = async ({ children, params }: CourseLayoutProps) => {
     );
 
     console.log("[CourseLayout] Fetching tuition for course:", course.id);
-    const tuition = await db.tuition.findUnique({
+    const tuition = await prisma.tuition.findUnique({
       where: {
         userId_courseId: {
           userId,

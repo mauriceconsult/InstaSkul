@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Attachment, Coursework } from "@prisma/client";
 
 interface GetCourseworkProps {
@@ -12,10 +12,10 @@ export const getCoursework = async ({
   courseworkId,
 }: GetCourseworkProps) => {
   try {
-    const course = await db.course.findUnique({
+    const course = await prisma.course.findUnique({
       where: { id: courseId, isPublished: true },
     });
-    const coursework = await db.coursework.findUnique({
+    const coursework = await prisma.coursework.findUnique({
       where: { id: courseworkId, isPublished: true },
     });
     if (!course || !coursework)
@@ -24,12 +24,12 @@ export const getCoursework = async ({
     let attachments: Attachment[] = [];
     let nextCoursework: Coursework | null = null;
     if (userId) {
-      attachments = await db.attachment.findMany({
+      attachments = await prisma.attachment.findMany({
         where: { courseId: courseId },
       });
     }
     if (coursework.userId || userId) {
-      nextCoursework = await db.coursework.findFirst({
+      nextCoursework = await prisma.coursework.findFirst({
         where: {
           courseId: courseId,
           isPublished: true,
@@ -38,7 +38,7 @@ export const getCoursework = async ({
         orderBy: { position: "asc" },
       });
     }
-    const userProgress = await db.userProgress.findUnique({
+    const userProgress = await prisma.userProgress.findUnique({
       where: { userId_courseworkId: { userId, courseworkId } },
     });
     return {

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,7 @@ export async function PATCH(
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const ownCoursenoticeboard = await db.courseNoticeboard.findUnique({
+    const ownCoursenoticeboard = await prisma.courseNoticeboard.findUnique({
       where: {
         id: (await params).courseCoursenoticeboardId,
         userId,
@@ -28,7 +28,7 @@ export async function PATCH(
     if (!ownCoursenoticeboard) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    const unpublishedCoursenoticeboard = await db.courseNoticeboard.update({
+    const unpublishedCoursenoticeboard = await prisma.courseNoticeboard.update({
       where: {
         id: (await params).courseCoursenoticeboardId,
         userId,
@@ -37,14 +37,14 @@ export async function PATCH(
         isPublished: false,
       },
     });
-    const publishedCoursenoticeboard = await db.courseNoticeboard.findMany({
+    const publishedCoursenoticeboard = await prisma.courseNoticeboard.findMany({
       where: {
         id: (await params).courseCoursenoticeboardId,
         isPublished: true,
       },
     });
     if (!publishedCoursenoticeboard.length) {
-      await db.courseNoticeboard.update({
+      await prisma.courseNoticeboard.update({
         where: {
           id: (await params).courseCoursenoticeboardId,
         },

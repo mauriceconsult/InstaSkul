@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { Schools } from "./_components/schools";
 import { SearchInput } from "./_components/search-input";
 import { auth } from "@clerk/nextjs/server";
@@ -20,7 +20,7 @@ const SearchPage = async ({
   if (!userId) {
     return redirect("/"); 
   }
-  const schools = await db.school.findMany({
+  const schools = await prisma.school.findMany({
     orderBy: {
       name: "asc",
     },
