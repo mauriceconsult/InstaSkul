@@ -14,11 +14,9 @@ export function FileUpload({ onChange, endpoint }: FileUploadProps) {
     <UploadButton<OurFileRouter, keyof OurFileRouter>
       endpoint={endpoint}
       onClientUploadComplete={(res) => {
-        console.log("Upload complete:", res);
-        if (res?.[0]?.url) {
-          onChange(res[0].url);
-        }
-      }}
+  console.log("PROD: Upload complete!", res); // Only logs in production
+  if (res?.[0]?.url) onChange(res[0].url);
+}}
       onUploadError={(err) => {
         console.error("Upload failed:", err);
         alert("Upload failed");
