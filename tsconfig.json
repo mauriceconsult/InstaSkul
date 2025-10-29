@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true, 
     "jsx": "preserve", // ✅ use the modern JSX runtime
     "lib": [
       "dom",

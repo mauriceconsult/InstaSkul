@@ -311,15 +311,15 @@ model NoticeboardComment {
   userId         String
   content        String
   createdAt      DateTime  @default(now())
-  parentId       String?   // for replies
+  adminId       String?   // for replies
 
   noticeboard    Noticeboard @relation(fields: [noticeboardId], references: [id])  
-  parent         NoticeboardComment? @relation("CommentReplies", fields: [parentId], references: [id])
+  admin         NoticeboardComment? @relation("CommentReplies", fields: [adminId], references: [id])
   replies        NoticeboardComment[] @relation("CommentReplies")
 
   @@index([noticeboardId])
   @@index([userId])
-  @@index([parentId])
+  @@index([adminId])
 }
 
 model CourseNoticeboardComment {
@@ -328,14 +328,14 @@ model CourseNoticeboardComment {
   userId                String
   content               String
   createdAt             DateTime  @default(now())
-  parentId              String?
+  courseId              String?
   courseNoticeboard     CourseNoticeboard @relation(fields: [courseNoticeboardId], references: [id])
-  parent                CourseNoticeboardComment? @relation("CourseCommentReplies", fields: [parentId], references: [id])
+  course                CourseNoticeboardComment? @relation("CourseCommentReplies", fields: [courseId], references: [id])
   replies               CourseNoticeboardComment[] @relation("CourseCommentReplies")
 
   @@index([courseNoticeboardId])
   @@index([userId])
-  @@index([parentId])
+  @@index([courseId])
 }
 model AssignmentSubmission {
   id           String    @id @default(cuid())
